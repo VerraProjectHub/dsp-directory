@@ -5,73 +5,627 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VM0047 Data Service Providers (DSPs) Directory</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            slate: {
+              50: "#f5f8fc",
+              100: "#eef3fc",
+              200: "#e2e9f3",
+              300: "#cdd8e8",
+              400: "#a4b4d4",
+              500: "#5c6879",
+              600: "#465875",
+              700: "#19386e",
+              800: "#0e2b64",
+              900: "#0a2050"
+            },
+            emerald: {
+              50: "#eef7e8",
+              100: "#e3f2d8",
+              500: "#82c34f",
+              600: "#74b542",
+              700: "#2f6b1e",
+              800: "#285c1b",
+              900: "#204c17"
+            }
+          }
+        }
+      }
+    };
+  </script>
   <style>
+    :root {
+      color-scheme: light;
+      --pr-ink: #0e2b64;
+      --pr-ink-deep: #0a2050;
+      --pr-green: #82c34f;
+      --pr-teal: #047299;
+      --pr-paper: #f5f8fc;
+      --pr-line: #e2e9f3;
+      --pr-radius-control: 15px;
+      --pr-radius-card: 22px;
+      --pr-radius-panel: 26px;
+      --pr-header-surface: rgba(14, 43, 100, 0.92);
+    }
+
+    @font-face {
+      font-family: "Figtree";
+      src: url("/assets/fonts/figtree/figtree-variable.woff2") format("woff2-variations");
+      font-weight: 300 700;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Fraunces";
+      src: url("/assets/fonts/fraunces/fraunces-variable.woff2") format("woff2-variations");
+      font-weight: 300 700;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Fraunces";
+      src: url("/assets/fonts/fraunces/fraunces-variable-italic.woff2") format("woff2-variations");
+      font-weight: 300 700;
+      font-style: italic;
+      font-display: swap;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      background:
+        radial-gradient(ellipse at 85% 0, rgba(58, 157, 196, 0.08), transparent 35rem),
+        var(--pr-paper);
+      font-family: "Figtree", "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
     .modal-open { overflow: hidden; }
+
+    .registry-header,
+    .directory-footer,
+    .site-footer {
+      flex-shrink: 0;
+    }
+
+    main {
+      flex: 1 0 auto;
+      width: 100%;
+    }
+
+    .directory-main {
+      padding-top: clamp(1.5rem, 4vw, 3rem);
+      padding-bottom: clamp(2rem, 5vw, 3.5rem);
+    }
+
+    .registry-header {
+      background: var(--pr-header-surface);
+      backdrop-filter: saturate(150%) blur(14px);
+      -webkit-backdrop-filter: saturate(150%) blur(14px);
+      border-color: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 12px 30px -18px rgba(0, 0, 0, 0.6);
+    }
+
+    .registry-header h1 {
+      color: #fff;
+      font-family: "Fraunces", ui-serif, Georgia, serif;
+      font-weight: 600;
+      letter-spacing: -0.035em;
+      text-align: center;
+      font-size: clamp(1.35rem, 2.5vw, 1.875rem);
+      line-height: 1.15;
+    }
+
+    .registry-heading-row {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .registry-brand {
+      display: inline-flex;
+      align-items: center;
+      color: #fff;
+    }
+
+    .registry-heading-spacer {
+      justify-self: end;
+      width: 109px;
+    }
+
+    .registry-brand-logo {
+      display: block;
+      width: 109px;
+      height: 40px;
+      object-fit: contain;
+      filter: brightness(0) invert(1);
+    }
+
+    .dsp-card h2,
+    .modal-panel h3,
+    .detail-section h4 {
+      font-family: "Fraunces", ui-serif, Georgia, serif;
+    }
+
+    @media (max-width: 639px) {
+      .registry-heading-row {
+        grid-template-columns: auto 1fr;
+        gap: 0.75rem;
+      }
+
+      .registry-brand-logo {
+        width: 76px;
+        height: auto;
+      }
+
+      .registry-header h1 {
+        font-size: clamp(1.15rem, 5vw, 1.5rem);
+      }
+
+      .registry-heading-spacer {
+        display: none;
+      }
+    }
+
+    .search-controls {
+      display: grid;
+      grid-template-columns: minmax(0, 1.7fr) repeat(2, minmax(180px, 1fr));
+      gap: 14px;
+      margin-bottom: 2rem;
+      padding: clamp(16px, 2.5vw, 24px);
+      border: 1px solid var(--pr-line);
+      border-radius: 22px;
+      background: #fff;
+      box-shadow: 0 14px 34px rgba(14, 43, 100, 0.08);
+    }
+
+    .filter-field {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .filter-label {
+      padding-left: 4px;
+      color: #53647e;
+      font-size: 0.76rem;
+      font-weight: 650;
+      letter-spacing: 0.035em;
+    }
+
+    .search-controls input,
+    .search-controls select {
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid #d7e1ed;
+      border-radius: 14px;
+      padding: 0 15px;
+      background-color: #f9fbfd;
+      color: var(--pr-ink);
+      font: inherit;
+      font-size: 0.92rem;
+      box-shadow: none;
+      transition: border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+    }
+
+    .search-controls input:focus,
+    .search-controls select:focus {
+      outline: none;
+      border-color: var(--pr-green);
+      background-color: #fff;
+      box-shadow: 0 0 0 4px rgba(130, 195, 79, 0.18);
+    }
+
+    .directory-intro {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .directory-intro h2 {
+      margin: 0;
+      color: var(--pr-ink);
+      font-family: "Fraunces", ui-serif, Georgia, serif;
+      font-size: clamp(1.5rem, 2.5vw, 2rem);
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+    }
+
+    .directory-intro p {
+      margin: 6px 0 0;
+      color: #5c6879;
+      font-size: 0.95rem;
+    }
+
+    .results-count {
+      flex: 0 0 auto;
+      padding: 8px 13px;
+      border: 1px solid #dce8d3;
+      border-radius: 999px;
+      background: #f0f7e9;
+      color: #2f6b1e;
+      font-size: 0.82rem;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+
+    .dsp-grid {
+      align-items: stretch;
+    }
+
+    .dsp-card {
+      min-height: 300px;
+      padding: 24px;
+    }
+
+    .dsp-card h2 {
+      font-size: 1.25rem;
+      line-height: 1.25;
+    }
+
+    .dsp-provider-logo-frame {
+      display: flex;
+      height: 72px;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      padding: 0.75rem;
+      border-radius: 12px;
+      background: #f8fafd;
+    }
+
+    .dsp-provider-logo {
+      display: block;
+      max-width: min(100%, 180px);
+      max-height: 46px;
+      object-fit: contain;
+    }
+
+    .dsp-card .dsp-location {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #718096;
+      font-size: 0.78rem;
+    }
+
+    .dsp-card .dsp-summary {
+      color: #53647e;
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+
+    .dsp-card .dsp-facts {
+      margin-top: 1.1rem;
+      border-color: #edf1f6;
+      font-size: 0.78rem;
+    }
+
+    .dsp-card .dsp-facts > div {
+      gap: 12px;
+      padding: 3px 0;
+    }
+
+    .dsp-card .dsp-facts > div > span:last-child {
+      text-align: right;
+    }
+
+    .dsp-card .dsp-actions {
+      margin-top: 1.25rem;
+      padding-top: 1rem;
+      border-color: #edf1f6;
+    }
+
+    .dsp-card .registry-action {
+      padding: 0.7rem 1rem;
+      font-size: 0.82rem;
+    }
+
+    .dsp-card .api-status {
+      flex: 0 0 auto;
+    }
+
+    .dsp-card .quick-link {
+      display: inline-flex;
+      width: 36px;
+      height: 36px;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #e2e9f3;
+      border-radius: 12px;
+      background: #f8fafd;
+      transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+
+    .dsp-card .quick-link:hover {
+      border-color: #cdd8e8;
+      background: #eef3fc;
+      color: var(--pr-ink);
+    }
+
+    @media (max-width: 767px) {
+      .search-controls {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .filter-field:first-child {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .directory-intro {
+        align-items: start;
+        flex-direction: column;
+      }
+
+      .search-controls {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .filter-field:first-child {
+        grid-column: auto;
+      }
+
+      .dsp-card {
+        min-height: 0;
+        padding: 20px;
+      }
+    }
+
+    .resource-badge {
+      background: rgba(130, 195, 79, 0.16);
+      color: #d3f1b9;
+      border: 1px solid rgba(166, 220, 121, 0.32);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .dsp-card {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      border-color: var(--pr-line);
+      border-radius: var(--pr-radius-card);
+      box-shadow: 0 8px 24px rgba(14, 43, 100, 0.07);
+      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+    }
+
+    .dsp-card::before {
+      position: absolute;
+      inset: 0 0 auto;
+      height: 3px;
+      background: linear-gradient(90deg, var(--pr-green), #3a9dc4);
+      content: "";
+    }
+
+    .dsp-card:hover {
+      transform: translateY(-3px);
+      border-color: #c5d6e9;
+      box-shadow: 0 16px 32px rgba(14, 43, 100, 0.13);
+    }
+
+    .dsp-card > div:first-child > div:first-child > span {
+      border-radius: 999px;
+      padding: 0.25rem 0.65rem;
+    }
+
+    .registry-action {
+      background: var(--pr-green);
+      color: #173c16;
+      border-radius: 12px;
+      box-shadow: 0 6px 14px rgba(130, 195, 79, 0.2);
+    }
+
+    .registry-action:hover {
+      background: #74b542;
+      color: #102d12;
+    }
+
+    .detail-modal {
+      background: rgba(7, 22, 52, 0.72);
+    }
+
+    .modal-panel {
+      border: 1px solid rgba(226, 233, 243, 0.8);
+      border-radius: var(--pr-radius-panel);
+      box-shadow: 0 30px 80px rgba(7, 22, 52, 0.3);
+    }
+
+    .modal-heading {
+      background:
+        radial-gradient(ellipse at 90% 0, rgba(58, 157, 196, 0.14), transparent 22rem),
+        #f5f8fc;
+    }
+
+    .modal-close:focus-visible,
+    .modal-close:hover {
+      color: var(--pr-ink);
+      background: #e2e9f3;
+    }
+
+    .modal-panel button {
+      border-radius: 12px;
+    }
+
+    #modalContent > div {
+      border-radius: 14px;
+    }
+
+    #modalContent > .detail-section {
+      padding: 14px 16px;
+      border: 1px solid var(--pr-line);
+      background: linear-gradient(135deg, #fff, #f8fafd);
+    }
+
+    .detail-section h4 {
+      color: var(--pr-teal);
+    }
+
+    #modalContent button,
+    #modalContent a {
+      border-radius: 10px;
+    }
+
+    .site-footer {
+      background: var(--pr-header-surface);
+      color: #fff;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: saturate(150%) blur(14px);
+      -webkit-backdrop-filter: saturate(150%) blur(14px);
+    }
+
+    .site-footer-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px 16px;
+      width: 100%;
+      min-height: 56px;
+      box-sizing: border-box;
+      padding: 8px clamp(16px, 4vw, 32px);
+      font-size: 14px;
+      line-height: 1.5;
+      font-weight: 400;
+    }
+
+    .site-footer p {
+      margin: 0;
+    }
+
+    .site-footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 4px 16px;
+    }
+
+    .site-footer a {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .site-footer a:hover {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    @media (min-width: 768px) {
+      .site-footer-content {
+        flex-direction: row;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    @media (max-width: 639px) {
+      .search-controls {
+        padding: 14px;
+        border-radius: 18px;
+      }
+
+      .modal-panel {
+        border-radius: 24px 24px 0 0;
+      }
+    }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen">
 
   <!-- Header -->
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+  <header class="registry-header sticky top-0 z-30 border-b">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
-      <div class="md:flex md:items-center md:justify-between">
-        <div>
-          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 mb-2">
-            Verra VM0047 Resource
-          </span>
-          <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
-            Data Service Provider (DSP) Directory
-          </h1>
-          <p class="text-sm text-slate-500 mt-1">
-            Approved and listed VM0047 Stocking Index (SI) and dynamic performance baselining providers.
-          </p>
+      <div class="registry-heading-row">
+        <div class="registry-brand" aria-label="Verra">
+          <img class="registry-brand-logo" src="./logo.svg" alt="Verra" width="109" height="40" />
         </div>
-      </div>
-
-      <!-- Search & Filters -->
-      <div class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <input 
-          id="searchInput" 
-          type="text" 
-          placeholder="Search by provider, product, or keyword..." 
-          class="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white"
-        />
-        <select 
-          id="statusFilter" 
-          class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white"
-        >
-          <option value="">All API Integration Statuses</option>
-          <option value="Completed">API Completed</option>
-          <option value="In progress">API In progress</option>
-        </select>
-        <select 
-          id="resolutionFilter" 
-          class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white"
-        >
-          <option value="">All Spatial Resolutions</option>
-          <option value="10m">10m</option>
-          <option value="30m">30m</option>
-        </select>
+        <h1>Data Service Provider (DSP) Directory</h1>
+        <span class="registry-heading-spacer" aria-hidden="true"></span>
       </div>
     </div>
   </header>
 
   <!-- Main Content Cards -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <div id="dspGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  <main class="directory-main max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="directory-intro">
+      <div>
+        <h2>Explore providers</h2>
+        <p>Provider-submitted information about VM0047 Stocking Index (SI) and dynamic performance-baselining data services.</p>
+      </div>
+      <span class="results-count" id="resultsCount" aria-live="polite"></span>
+    </div>
+    <!-- Search & Filters -->
+    <div class="search-controls grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <label class="filter-field">
+        <span class="filter-label">Search providers</span>
+        <input
+          id="searchInput"
+          type="search"
+          placeholder="Name, product, location..."
+          aria-label="Search providers"
+        />
+      </label>
+      <label class="filter-field">
+        <span class="filter-label">API integration</span>
+        <select id="statusFilter">
+          <option value="">All statuses</option>
+          <option value="Completed">API Completed</option>
+          <option value="In progress">API In progress</option>
+        </select>
+      </label>
+      <label class="filter-field">
+        <span class="filter-label">Spatial resolution</span>
+        <select id="resolutionFilter">
+          <option value="">All resolutions</option>
+          <option value="10m">10m</option>
+          <option value="30m">30m</option>
+        </select>
+      </label>
+    </div>
+    <div id="dspGrid" class="dsp-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <!-- Injected via JavaScript -->
     </div>
   </main>
+  <footer class="site-footer">
+    <div class="site-footer-content">
+      <p>© 2026 Verra All rights reserved.</p>
+      <nav class="site-footer-links" aria-label="Footer">
+        <a href="https://verra.org/trust-and-security/" target="_blank" rel="noopener noreferrer">Trust &amp; Security</a>
+        <a href="https://verra.org/verra-website-terms-and-conditions-of-use/" target="_blank" rel="noopener noreferrer">Terms &amp; Conditions</a>
+        <a href="https://verra.org/about-verra/logos/" target="_blank" rel="noopener noreferrer">Logo Use Request</a>
+      </nav>
+    </div>
+  </footer>
 
   <!-- Modal for full technical responses -->
-  <div id="detailModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex justify-center items-end sm:items-center p-0 sm:p-4">
-    <div class="bg-white w-full sm:max-w-3xl max-h-[90vh] rounded-t-2xl sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-      <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+  <div id="detailModal" class="detail-modal fixed inset-0 z-50 hidden backdrop-blur-sm flex justify-center items-end sm:items-center p-0 sm:p-4">
+    <div class="modal-panel bg-white w-full sm:max-w-3xl max-h-[90vh] rounded-t-2xl sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div class="modal-heading px-6 py-4 border-b border-slate-200 flex justify-between items-center">
         <div>
           <h3 id="modalTitle" class="text-xl font-bold text-slate-900"></h3>
           <p id="modalSubtitle" class="text-xs text-slate-500 mt-0.5"></p>
         </div>
-        <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-200 transition">
+        <button onclick="closeModal()" class="modal-close text-slate-400 p-1.5 rounded-lg transition">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
       </div>
@@ -88,253 +642,336 @@
     // Embedded DSP responses directly from CSV data
     const dspData = [
       {
-        id: "belian",
-        name: "Belian Earth",
-        hq: "Wantage (East Hanney), United Kingdom",
-        founded: "",
-        url: "https://belian.earth",
-        requestUrl: "https://belian.earth/science/vm0047",
-        product: "ramet47 platform: GEDI-calibrated Stocking Index (RH98 canopy height + PAI plant area index), annual, 30 m",
-        summary: "belian.earth builds locally-trained, project-specific counterfactual baselines for nature-based carbon projects. For ARR under VM0047, ramet47 narrows the comparison area using satellite embeddings, then matches project and control plots on a stocking index.",
-        approach: "Locally-trained, GEDI-calibrated stocking index (canopy height RH98 + canopy density PAI), delivered annually at 30 m with no gap years, and a two-stage matching design: an AlphaEarth-embedding refinement limits the donor pool to environmentally comparable ground, then formal SI matching (VM0047 Appendix 1, A1.4) selects the controls. Validated on Brazil Cerrado 1 (VCS 5511).",
-        email: "chris@belian.earth",
-        versions: "Version 1.1",
-        production: "Two satellite embedding products (ESD from Landsat+MODIS, 2000-2024; AlphaEarth from Sentinel-1/2, Landsat and GEDI, 2017 onward) predict top-of-canopy height (RH98) and canopy density (PAI), calibrated to NASA GEDI lidar. Resampled to 30 m grid and fused into one annual series using inverse-variance weighting and temporal Kalman smoothing.",
-        correlation: "Held-out GEDI test (RH98 r2 ~0.72, RMSE ~2.5m); swisstopo airborne-lidar (r 0.83-0.92); CTrees biomass cross-comparison (r2 ~0.68-0.73) and recovery of benchmark on VCS 5511.",
-        limits: "SI supplied only where SI-AGB correlation can be evidenced. SI carries relative benchmark; absolute tonnes need field plots.",
-        resolution: "30m",
-        years: "2000-2024",
-        regions: "Global",
-        limitations: "SI carries only relative benchmark. RH98 sits ~5-6 m above airborne-lidar height (absorbed in calibration). Pre-2013 Landsat-7 era data down-weighted.",
-        fieldValidation: "Where local field plots or inventory exist, used to validate/calibrate. Otherwise uses held-out GEDI, swisstopo lidar, CTrees, and ESA CCI Biomass.",
-        whitepaper: "https://belian.earth/science/vm0047",
-        apiStatus: "In progress",
-        deliveryNoApi: ""
+            "id": "belian",
+            "name": "Belian Earth",
+            "hq": "Wantage (East Hanney), United Kingdom",
+            "founded": "",
+            "url": "https://belian.earth",
+            "requestUrl": "https://belian.earth/science/vm0047",
+            "summary": "belian.earth builds locally-trained, project-specific counterfactual baselines for nature-based carbon projects (ARR, REDD+, IFM). For ARR under VM0047, its ramet47 platform narrows the comparison area using satellite embeddings, then matches project and control plots on a stocking index.",
+            "approach": "Locally-trained, GEDI-calibrated stocking index (canopy height RH98 + canopy density PAI), delivered annually at 30 m with no gap years, and a two-stage matching design: an AlphaEarth-embedding refinement limits the donor pool to environmentally comparable ground, then formal SI matching (VM0047 Appendix 1, A1.4) selects the controls. Matching is deterministic and reproducible for VVB review, and data sources, versions and weights are documented. Validated on the first issued VM0047 ARR project (Brazil Cerrado 1, VCS 5511), where the reproduced benchmark approaches the registered value. Before contacting us: SI is provided only where SI-AGB correlation can be evidenced for the forest type or ecoregion; the SI carries only the relative benchmark, so absolute tonnes still come from field plots; proponent field data is not required but improves calibration and tightens prediction intervals; where a remote-sensing t = 0 estimate of pre-existing biomass is needed, we supply the conservative upper 90% bound.",
+            "email": "chris@belian.earth",
+            "product": "ramet47 platform: GEDI-calibrated Stocking Index (RH98 canopy height + PAI plant area index), annual, 30 m, fused from ESD and AlphaEarth embeddings.",
+            "versions": "Version 1.1",
+            "production": "Two satellite embedding products (ESD from Landsat+MODIS, 2000-2024; AlphaEarth from Sentinel-1/2, Landsat and GEDI, 2017 onward) predict top-of-canopy height (RH98) and canopy density (PAI), calibrated to NASA GEDI lidar. Both are resampled to a 30 m grid and fused into one annual, gap-free series using inverse-variance weighting, a temporal Kalman smoother and breakpoint detection, with AlphaEarth weighted higher from 2017. Low-confidence pixel-years are down-weighted, not discarded.",
+            "correlation": "Four lines of evidence: held-out GEDI test (geographic split) with RH98 r2 about 0.72, RMSE about 2.5 m; swisstopo airborne-lidar canopy height, r 0.83-0.92; cross-comparison with CTrees biomass (r2 about 0.68-0.73, 2012-2024) and ESA CCI Biomass; and recovery of the benchmark on the first issued VM0047 project (VCS 5511). Local field plots, studies or inventory data are used where available. SI is not provided where correlation cannot be shown.",
+            "limits": "SI is supplied only where SI-AGB correlation can be evidenced for the forest type or ecoregion; otherwise it is not provided for that area. SI carries only the relative benchmark; absolute tonnes need field plots.",
+            "resolution": "30m",
+            "years": "2000-2024",
+            "updateFrequency": "Annual",
+            "regions": "Global",
+            "limitations": "SI carries only the relative benchmark (absolute tonnes need field plots). RH98 sits about 5-6 m above airborne-lidar canopy height (absorbed in calibration). The CTrees comparison is a consistency check, not ground truth. Pre-2013 Landsat-7-era data are down-weighted.",
+            "projectSize": "",
+            "fieldValidation": "Where local field plots, published studies or proponent inventory data exist, they are used to validate and calibrate the SI-to-biomass relationship. Otherwise validation uses held-out GEDI data, swisstopo airborne lidar, and CTrees and ESA CCI Biomass comparisons.",
+            "whitepaper": "https://belian.earth/science/vm0047",
+            "methodChanges": "We will notify Verra of any material updates or changes to SI generation methods or selection procedures that affect previously provided project data, and of any proponent-requested changes that do the same. Products, versions and weights are recorded for VVB audit; new sensors or metrics are adopted through multi-year overlap cross-calibration.",
+            "apiStatus": "In progress",
+            "deliveryNoApi": "",
+            "auditDocumentation": "Yes. We will deliver the SI dataset, project/control plot inputs and code or process documentation in auditable formats on request from the proponent, Verra or a VVB."
       },
       {
-        id: "cyclops",
-        name: "CYCLOPS",
-        hq: "Lewes, Delaware, United States",
-        founded: "",
-        url: "https://www.cyclops.ai",
-        requestUrl: "",
-        product: "CYCLOPS annual 10 m aboveground biomass (AGB, t/ha) stocking index (Barlow Twins / TESSERA foundation model)",
-        summary: "US-incorporated dMRV company built on dClimate's EarthOS. For VM0047 it provides an annual 10 m aboveground-biomass map used as the stocking index, and supports the full workflow from eligibility and dynamic baseline to the PDD and monitoring report.",
-        approach: "Annual 10 m aboveground biomass (t/ha), not a proxy index, derived from a self-supervised foundation model of Sentinel-1/2 time series calibrated to GEDI and airborne LiDAR. CYCLOPS has served as DSP on VM0047-relevant projects in Brazil, Kenya, India, Sierra Leone, Tanzania, and Vietnam.",
-        email: "",
-        versions: "Version 1.1",
-        production: "Sentinel-2 (and Sentinel-1 in TESSERA) time series condensed by self-supervised foundation model into per-pixel representations. Trained on GEDI/airborne LiDAR to predict structure converted to AGB (t/ha) at 10 m.",
-        correlation: "Forest type & ecoregion compared with training strata; R2, RMSE and bias reported. TESSERA canopy height gave R2 0.78 against airborne LiDAR; AGB checked against Para, Brazil agroforestry plots.",
-        limits: "Withheld for strata under-represented in training until independent reference data confirms local correlation (suspended if R2 < ~0.6).",
-        resolution: "10m",
-        years: "Annual (2016-present)",
-        regions: "Global",
-        limitations: "GEDI coverage ~50° N-S (ICESat-2 used elsewhere); pixels with insufficient valid observations flagged, not gap-filled.",
-        fieldValidation: "AGB validated against in-situ agroforestry inventory plots (Para, Brazil), airborne LiDAR and GEDI L4A footprints.",
-        whitepaper: "https://doi.org/10.1109/JSTARS.2024.3426044 ; https://arxiv.org/abs/2506.20380",
-        apiStatus: "In progress",
-        deliveryNoApi: ""
+            "id": "cyclops",
+            "name": "CYCLOPS",
+            "hq": "Lewes, Delaware, United States",
+            "founded": "",
+            "url": "https://www.cyclops.ai",
+            "requestUrl": "",
+            "summary": "US-incorporated dMRV company built on dClimate's EarthOS. For VM0047 it provides an annual 10 m aboveground-biomass map used as the stocking index, and supports the full workflow from eligibility and dynamic baseline to the PDD and monitoring report.",
+            "approach": "Annual 10 m aboveground biomass (t/ha), not a proxy index, derived from a self-supervised foundation model (Barlow Twins / TESSERA) of Sentinel-1/2 time series that is gap-free, calibrated to GEDI and airborne LiDAR and checked against in-situ agroforestry plots. Built on public data and peer-reviewed methods so VVBs and third parties can review it. CYCLOPS has served as a DSP on VM0047-relevant projects in Brazil, Kenya, India, Sierra Leone, Tanzania and Vietnam, and supports eligibility, donor pool and control selection, the performance benchmark (SDM and z-test), carbon quantification, risk and leakage, and PDD and monitoring report drafting. Before contacting us: a pre-deployment correlation assessment is run for each project; if the forest stratum is under-represented in the training data, SI is withheld until independent reference data (airborne LiDAR, GEDI L4A, inventory plots) confirm local correlation, and delivery is suspended if correlation falls below about R2 0.6. GEDI covers roughly 50 degrees N-S; ICESat-2 is used outside.",
+            "email": "",
+            "product": "CYCLOPS annual 10 m aboveground biomass (AGB, t/ha) stocking index, built on a Barlow Twins / TESSERA foundation model.",
+            "versions": "Version 1.1",
+            "production": "Sentinel-2 (and Sentinel-1 in TESSERA) time series are condensed by a self-supervised foundation model into gap-free per-pixel representations. A model trained on GEDI (or airborne LiDAR where available) predicts structure, converted to AGB (t/ha) with an ecoregion-specific factor, giving annual 10 m maps. Imagery is limited to a peak growing-season window, cloud-masked (SCL, s2cloudless) and median-composited; pixels with too few valid observations are flagged, not gap-filled.",
+            "correlation": "Per project, the forest type and ecoregion are compared with the model's training strata, then R2, RMSE and bias are reported. If the stratum is under-represented, SI is withheld until independent references (airborne LiDAR, GEDI L4A, inventory plots) show correlation. Hold-out data are re-evaluated annually per ecoregion. TESSERA canopy height gave R2 0.78 against airborne LiDAR (N. California); AGB was checked against agroforestry plots in Para, Brazil.",
+            "limits": "SI is withheld for forest strata under-represented in the training data until local correlation is shown with independent reference data; delivery is suspended if correlation falls below about R2 0.6.",
+            "resolution": "10m",
+            "years": "",
+            "updateFrequency": "Annual",
+            "regions": "Global",
+            "limitations": "GEDI training coverage is about 50 degrees N-S (ICESat-2 used elsewhere); strata under-represented in training need an extension assessment before SI is released; pixels with too few valid observations are flagged, not gap-filled.",
+            "projectSize": "",
+            "fieldValidation": "Yes. AGB was validated against in-situ agroforestry inventory plots (Para state, Brazil; 1-3 plots per site), airborne LiDAR and GEDI L4A footprints; hold-out reference data are re-evaluated each year per ecoregion.",
+            "whitepaper": "https://doi.org/10.1109/JSTARS.2024.3426044 ; https://arxiv.org/abs/2506.20380",
+            "methodChanges": "We will notify Verra of any material updates or changes to SI generation methods or selection procedures that affect previously provided project data, and of any proponent-requested changes that do the same.",
+            "apiStatus": "In progress",
+            "deliveryNoApi": "",
+            "auditDocumentation": "Yes. We will deliver the SI dataset, project/control plot inputs and code or process documentation in auditable formats on request from the proponent, Verra or a VVB."
       },
       {
-        id: "lobelia",
-        name: "Lobelia Earth",
-        hq: "Barcelona, Spain",
-        founded: "2018",
-        url: "https://www.lobelia.earth",
-        requestUrl: "",
-        product: "Lobelia Forest Structure (Lobelia Carbon): annual aboveground biomass, canopy height and canopy cover at 10 m.",
-        summary: "Barcelona-based company using Earth observation, climate modelling and AI. For VM0047 it supplies yearly 10 m maps of aboveground biomass, canopy height and canopy cover with uncertainty ranges, delivered by API with automated project-control plot matching.",
-        approach: "Peer-reviewed, biome-specific deep-learning (UNet) models fuse airborne and GEDI lidar with Sentinel-1/2, land cover and DEM data to map AGB at 10 m every year from 2016, with 5th-95th percentile uncertainty. Control plots chosen from automated donor pool within 100 km using Mahalanobis distance.",
-        email: "",
-        versions: "Version 1.1",
-        production: "Biome-specific UNet model fuses airborne lidar and GEDI with Sentinel-1/2, land cover, and DEM to map AGB, canopy height, and cover at 10 m annually from 2016. Growing-season median composite under 30% cloud cover.",
-        correlation: "Peer-reviewed validation (Perpinya-Valles et al., 2025) across 4 biomes gives Pearson r of 0.61-0.77. Benchmarked against local GEDI L4A footprints, NFI data, or project field plots.",
-        limits: "SI provided only where correlation with AGB is statistically verified for forest type and ecoregion.",
-        resolution: "10m",
-        years: "2016-present",
-        regions: "Global",
-        limitations: "Pearson r of 0.61-0.77 against reference data in validation study; uncertainty reported as 5th and 95th percentile confidence intervals.",
-        fieldValidation: "Validated globally with in-situ data in 4 biomes (Mediterranean, boreal, tropical rainforest, semi-arid savanna).",
-        whitepaper: "https://files.lobelia.earth/lobelia-website/forest-structure-lobelia.pdf ; https://www.mdpi.com/2072-4292/17/7/1268",
-        apiStatus: "In progress",
-        deliveryNoApi: "Via Lobelia's own API (job-based): raw yearly rasters, plot-level, and reporting-level metrics written to S3."
+            "id": "lobelia",
+            "name": "Lobelia Earth",
+            "hq": "Barcelona, Spain",
+            "founded": "2018",
+            "url": "https://www.lobelia.earth",
+            "requestUrl": "",
+            "summary": "Barcelona-based company using Earth observation, climate modelling and AI. For VM0047 it supplies yearly 10 m maps of aboveground biomass, canopy height and canopy cover (2016 to present) with uncertainty ranges, delivered by API with automated project-control plot matching.",
+            "approach": "Peer-reviewed, biome-specific deep-learning (UNet) models fuse airborne and GEDI lidar with Sentinel-1/2, land cover and DEM data to map AGB at 10 m every year from 2016, with 5th-95th percentile uncertainty for conservative estimates. Validated with in-situ data in four biomes (Mediterranean, boreal, tropical rainforest, semi-arid savanna). Seasonality is limited through biome-specific growing-season image selection. Control plots come from an automated donor pool within 100 km using Mahalanobis distance on land cover, terrain, climate, productivity and accessibility covariates. The service is API-based with unique IDs, version-controlled outputs, transparent project-control matching, three output levels (raw yearly rasters, plot-level and reporting-level metrics) and an SLA-based support portal. Before contacting us: SI is provided only where the SI-AGB correlation is statistically verified (Pearson r 0.61-0.77 in the validation study); local checks use GEDI L4A, national forest inventory data or project field plots.",
+            "email": "",
+            "product": "Lobelia Forest Structure (Lobelia Carbon): annual aboveground biomass, canopy height and canopy cover at 10 m.",
+            "versions": "Version 1.1",
+            "production": "A biome-specific deep-learning (UNet) model fuses airborne lidar and GEDI with Sentinel-1/2, land cover and DEM data to map AGB, canopy height and canopy cover at 10 m each year from 2016. Imagery is restricted to biome-specific growing seasons with under 30% cloud cover; clouds, shadows and snow are masked (SCL) and a yearly median composite is built. Outputs include 5th-95th percentile uncertainty.",
+            "correlation": "Peer-reviewed validation (Perpinya-Valles et al., 2025) in four biomes gives Pearson r of 0.61-0.77. Per project, SI is benchmarked against local GEDI L4A footprints, cross-validated with national forest inventory data or project field plots, and explainable-AI analysis shows which sensors matter locally. SI is delivered only where correlation is statistically verified.",
+            "limits": "SI is provided only where the correlation with AGB is statistically verified for the project's forest type and ecoregion.",
+            "resolution": "10m",
+            "years": "2016-present",
+            "updateFrequency": "Annual",
+            "regions": "Global",
+            "limitations": "Pearson r of 0.61-0.77 against reference data in the validation study (four biomes), so uncertainty is material; it is reported as 5th and 95th percentile confidence intervals.",
+            "projectSize": "",
+            "fieldValidation": "Yes. Validated globally with in-situ data in four biomes (Mediterranean, boreal, tropical rainforest, semi-arid savanna). For projects: local GEDI L4A footprints, national forest inventory data or project-specific field plots.",
+            "whitepaper": "https://files.lobelia.earth/lobelia-website/forest-structure-lobelia.pdf ; https://www.mdpi.com/2072-4292/17/7/1268",
+            "methodChanges": "We will notify Verra of any material updates or changes to SI generation methods or selection procedures that affect previously provided project data, and of any proponent-requested changes that do the same. Outputs are version-controlled with unique IDs.",
+            "apiStatus": "In progress",
+            "deliveryNoApi": "Via Lobelia's own API (job-based): outputs at three levels (raw yearly rasters, plot-level and reporting-level metrics), written to Lobelia's S3 bucket or the client's bucket.",
+            "auditDocumentation": "Yes. We will deliver the SI dataset, project/control plot inputs and code or process documentation in auditable formats on request from the proponent, Verra or a VVB."
       },
       {
-        id: "terracarbon",
-        name: "TerraCarbon",
-        hq: "Peoria, Illinois, United States",
-        founded: "2006",
-        url: "https://terracarbon.com",
-        requestUrl: "",
-        product: "Project-specific stocking indices built case by case from Landsat, Sentinel-2, or HLS data (e.g. NDFI + disturbance age)",
-        summary: "Advisory firm that helps develop carbon projects for natural climate solutions, from early feasibility to registration and monitoring. For VM0047 it builds a project-specific stocking index, matches project and control plots, and delivers a traceable performance benchmark.",
-        approach: "Supported Brazil Cerrado 1 (VCS 5511) and Zambia Smallholder Carbon-Linked Agroforestry. Chosen case by case from optical/SAR data and checked against local field data. Provides reproducible R and Python code, matched plots, and traceable Excel workbooks.",
-        email: "rebecca.dickson@terracarbon.com",
-        versions: "Version 1.1",
-        production: "Annual composites of Landsat, Sentinel-2, or HLS (SAR if optical unavailable) over 10-year history and 100 km buffer, cloud-screened.",
-        correlation: "Evaluated case by case using field data. For example, in Brazilian eucalyptus, NDFI + disturbance age model reached R2 of ~0.80-0.84 against stem-volume plots.",
-        limits: "SI approach is project-specific; optical/SAR saturation assessed per project.",
-        resolution: "10-30m (10-20m Sentinel-2, 30m Landsat)",
-        years: "10-year baseline to present",
-        regions: "Global",
-        limitations: "Optical data saturates in 1-3 years in eucalyptus; L-band SAR saturates at ~100-200 t/ha; metric tailored accordingly.",
-        fieldValidation: "Yes, whenever possible using field data gathered from the project area or ecoregion.",
-        whitepaper: "https://docs.google.com/document/d/1Gzat44SH_TO55DLehpJnc-A-OAE1DfOj/edit?usp=sharing",
-        apiStatus: "In progress",
-        deliveryNoApi: "To client and VVB: matching criteria, SI raster time series, matched plots, Excel workbook, written description, R/Python code."
+            "id": "terracarbon",
+            "name": "TerraCarbon",
+            "hq": "Peoria, Illinois, United States",
+            "founded": "2006",
+            "url": "https://terracarbon.com",
+            "requestUrl": "",
+            "summary": "Advisory firm that helps develop carbon projects for natural climate solutions, from early feasibility to registration and monitoring. For VM0047 it builds a project-specific stocking index, matches project and control plots, and delivers a traceable performance benchmark.",
+            "approach": "Experienced project developer and advisor: supported Brazil Cerrado 1 (VCS 5511, registered) and the Zambia Smallholder Carbon-Linked Agroforestry Project (under development), including stocking index development and performance benchmark analysis. The stocking index is chosen case by case from Landsat, Sentinel-2 or HLS optical data (SAR if optical is unavailable) and checked against field data from the project area or ecoregion whenever possible. Process: 10-year annual time series in a 100 km buffer, composites from the least cloudy 3-6 months, project plots covering at least 10% of the area, donor pool filtered by proximity, tenure, jurisdiction and ecoregion, at least 100x the required control plots generated, Mahalanobis matching and an SDM \u003c 0.25 check. Clients and VVBs receive the exact matching criteria, SI raster time series, matched plots, a traceable Excel workbook, a written justification and R and Python code. Before contacting us: the SI approach is project-specific, and optical or SAR saturation is assessed per project (e.g., eucalyptus plantations).",
+            "email": "rebecca.dickson@terracarbon.com",
+            "product": "No named product: project-specific stocking indices built case by case from Landsat, Sentinel-2 or HLS data (e.g., NDFI plus disturbance age).",
+            "versions": "Version 1.1",
+            "production": "Annual composites of Landsat, Sentinel-2 or HLS (SAR if optical is unavailable) over a 10-year history and a 100 km buffer, using the most cloud-free 3 months (widened to 6 if needed). A stocking index suited to the forest type is built from them, e.g., NDFI plus a disturbance-age model, and checked against field data where possible. Plots are about 3x3 pixel groups.",
+            "correlation": "Case by case, using field data from the project area or ecoregion whenever possible. In an illustrative Brazilian eucalyptus case, an NDFI + disturbance-age model reached R2 of about 0.80-0.84 against stem-volume plots. Optical and SAR saturation is assessed per project.",
+            "limits": "",
+            "resolution": "10-30m (10-20m Sentinel-2, 30m Landsat)",
+            "years": "",
+            "updateFrequency": "Annual",
+            "regions": "Global",
+            "limitations": "Optical data saturate within 1-3 years in eucalyptus plantations; L-band SAR saturates at about 100-200 t/ha; the SI metric is therefore chosen project by project.",
+            "projectSize": "",
+            "fieldValidation": "Yes, whenever possible, using field data gathered from the project area or ecoregion.",
+            "whitepaper": "https://docs.google.com/document/d/1Gzat44SH_TO55DLehpJnc-A-OAE1DfOj/edit?usp=sharing",
+            "methodChanges": "We will notify Verra of any material updates or changes to SI generation methods or selection procedures that affect previously provided project data, and of any proponent-requested changes that do the same. Clients and VVBs receive the exact matching criteria and code.",
+            "apiStatus": "In progress",
+            "deliveryNoApi": "To client and VVB: matching criteria, SI time-series raster, matched project/control plots, Excel workbook, written description and R/Python code.",
+            "auditDocumentation": "Yes. Clients and VVBs receive the exact matching criteria, SI raster time series, matched plots, a traceable Excel workbook, a written justification and the R and Python code, on request from the proponent, Verra or a VVB."
       },
       {
-        id: "treefera",
-        name: "Treefera",
-        hq: "London, United Kingdom",
-        founded: "2022",
-        url: "https://treefera.com",
-        requestUrl: "",
-        product: "Treefera VM0047 stocking index: annual NDVI from Landsat Collection 2 Level-2, 30 m",
-        summary: "AI-native intelligence platform for agricultural and soft-commodity supply chains. For VM0047 it provides an annual NDVI stocking index from Landsat (30 m, since 2000), an ARR eligibility checker, and performance monitoring and benchmarking.",
-        approach: "Documented NDVI pipeline mapped clause by clause to VM0047 Appendix 1: 0.81 ha plots, 100 km donor search, k=5 Mahalanobis matching, SDM <= 0.25, and Z >= 1.96 test. Harmonic regression separates seasonality from trend.",
-        email: "zachary.lutz@treefera.com",
-        versions: "Version 1.1",
-        production: "Per-pixel NDVI from Landsat 5/7/8/9 Collection 2 Level-2 surface reflectance, harmonic regression separates seasonality from trend. 2012 excluded.",
-        correlation: "Three lines of evidence: published NDVI-AGB relationships for biome, proponent field plots cross-validated at footprint scale, and independent AGB references.",
-        limits: "Requires 10 years pre-start history and 30 project plots (0.81 ha); 2012 excluded; NDVI saturates in closed-canopy high-biomass forests.",
-        resolution: "30m",
-        years: "2000-latest (2012 excluded)",
-        regions: "Global",
-        limitations: "NDVI saturates in closed-canopy; Landsat only; 2012 missing; Table A1 overlays not applied; Step 4 control revalidation pending.",
-        fieldValidation: "Yes, per project: proponent field plots cross-validate index at plot footprint alongside literature and independent references.",
-        whitepaper: "https://app.notion.com/p/365b7ce108a181138063fe299c08aa87",
-        apiStatus: "Completed",
-        deliveryNoApi: "Direct API delivery active."
+            "id": "treefera",
+            "name": "Treefera",
+            "hq": "London, United Kingdom",
+            "founded": "2022",
+            "url": "https://treefera.com",
+            "requestUrl": "",
+            "summary": "AI-native intelligence platform for agricultural and soft-commodity supply chains, including forest cover, biomass and carbon. For VM0047 it provides an annual NDVI stocking index from Landsat (30 m, since 2000), an ARR eligibility checker, and performance monitoring and benchmarking.",
+            "approach": "Fully documented NDVI pipeline mapped clause by clause to VM0047 Appendix 1, with automated QA on every run: 0.81 ha project plots (at least 75% inside the boundary), at least 30 plots, 100 km donor search, k = 5 Mahalanobis matching without replacement, SDM \u003c= 0.25 and the Z >= 1.96 benchmark test. NDVI comes from Landsat Collection 2 Level-2 at 30 m (2000 to the latest completed year; 2012 excluded). A harmonic regression separates seasonality from trend, and a fixed seasonal window can be used if the proponent or VVB prefers. Before contacting us: NDVI saturates in high-biomass closed-canopy forest, where we flag the limitation and add complementary biomass references; it is strongest in the low-to-moderate biomass range typical of ARR. At least 10 years of pre-start history are needed. The pipeline is Landsat-only (Sentinel-2 under evaluation). Step 4 control revalidation is not yet implemented, so runs are flagged as not methodologically complete.",
+            "email": "zachary.lutz@treefera.com",
+            "product": "Treefera VM0047 stocking index: annual NDVI from Landsat Collection 2 Level-2, 30 m.",
+            "versions": "Version 1.1",
+            "production": "NDVI is computed per pixel from Landsat 5/7/8/9 Collection 2 Level-2 surface reflectance (Microsoft Planetary Computer). Scenes up to 80% cloud are kept, clouds and shadows are masked with the QA band, same-day tiles are mosaicked, and each cell's annual value is the mean of valid pixels at 30 m (2000 to latest year, 2012 excluded). A harmonic regression then separates seasonal cycles from trend.",
+            "correlation": "NDVI has a peer-reviewed correlation with AGB. For each project we show three lines of evidence: published NDVI-AGB relationships for the biome; proponent field plots used to cross-validate at plot-footprint scale; and independent AGB references where available. Correlation is reported with uncertainty. It weakens in high-biomass closed-canopy forest, which we flag.",
+            "limits": "Needs at least 10 years of pre-start history and 30 project plots (0.81 ha each); 2012 is treated as missing; NDVI saturates in high-biomass closed-canopy forest (flagged).",
+            "resolution": "30m",
+            "years": "2000-latest completed year (2012 excluded)",
+            "updateFrequency": "Annual",
+            "regions": "Global",
+            "limitations": "NDVI saturates in closed-canopy forest; Landsat only (Sentinel-2 under evaluation); 2012 missing; Table A1 overlays not applied; Step 4 control revalidation not implemented.",
+            "projectSize": "",
+            "fieldValidation": "Yes, per project: proponent-supplied field plots cross-validate the index at plot-footprint resolution, alongside published NDVI-AGB relationships and independent AGB references where available.",
+            "whitepaper": "https://app.notion.com/p/365b7ce108a181138063fe299c08aa87",
+            "methodChanges": "We will notify Verra of any material updates or changes to SI generation methods or selection procedures that affect previously provided project data, and of any proponent-requested changes that do the same.",
+            "apiStatus": "Completed",
+            "deliveryNoApi": "",
+            "auditDocumentation": "Yes. Clause-by-clause comparison with VM0047 Appendix 1 and automated QA suites are maintained per stage, and data, code and process documentation are delivered in auditable formats on request from the proponent, Verra or a VVB."
       },
       {
-        id: "tspc",
-        name: "TransparenC (TSPC)",
-        hq: "Munich, Germany",
-        founded: "2022",
-        url: "https://transparenc.earth",
-        requestUrl: "",
-        product: "Two products: EVI from Landsat (30 m) and AGB from Sentinel-2 + GEDI (10 m)",
-        summary: "Geospatial analytics for carbon markets: 100+ automated data layers. For VM0047 it supplies stocking index data (AGB or EVI) and dynamic baselines built from a donor zone and matched control pixels.",
-        approach: "Offers 10 m AGB (Google Satellite Embedding V1 / Clay embeddings + GEDI) and 30 m EVI. Donor pool filtered for tenure/crops/projects, k-nearest matching with standardized difference <= 0.25. Approved Data Provider for Isometric Reforestation Protocol.",
-        email: "nicklas@transparenc.earth",
-        versions: "Version 1.1",
-        production: "AGB: project-specific gradient boosting/random forest on satellite embeddings paired with GEDI at 10 m. EVI: Landsat at 30 m, using consistent 4-month low-cloud window.",
-        correlation: "Direct GEDI AGB product reports test error, bias, RMSE, R2, and cross-validation. For EVI, proponent plots or quality-filtered GEDI verify the link.",
-        limits: "EVI is season-sensitive; proponent ideally supplies local forest plots to verify biomass link.",
-        resolution: "10m (AGB); 30m (EVI)",
-        years: "2000-latest complete year",
-        regions: "Global",
-        limitations: "EVI is more sensitive to seasonal variation than GEDI AGB; requires local recalibration/stratification if weak.",
-        fieldValidation: "Yes: proponent local forest plots or independent AGB data; otherwise published regional evidence and GEDI samples.",
-        whitepaper: "https://drive.google.com/file/d/1R7d-W9eo0ayfG2yqS4tANfAJKveengCd/view?usp=sharing",
-        apiStatus: "In progress",
-        deliveryNoApi: "GeoTIFF rasters, vector files, reproducible code, methodology report, and interactive viewer."
+            "id": "tspc",
+            "name": "TransparenC",
+            "hq": "Munich, Germany",
+            "founded": "2022",
+            "url": "https://transparenc.earth",
+            "requestUrl": "",
+            "summary": "Geospatial analytics for carbon markets: 100+ automated data layers for feasibility, due diligence and digital MRV. For VM0047 it supplies stocking index data (AGB or EVI) and a dynamic baseline built from a donor zone and matched control pixels.",
+            "approach": "Two SI products: AGB (10 m; random forest on Google Satellite Embedding V1 with GEDI, or Clay embeddings for sub-yearly use) and EVI (Landsat, 30 m), with optional fine-tuning on project samples and yearly, quarterly or monthly cadence. The dynamic baseline builds a donor zone (excluding protected areas, water, crops, snow and published carbon projects), picks k-nearest control pixels from pre-project history (Euclidean or Mahalanobis, configurable k and weights), validates matches (standardized differences \u003c= 0.25) and projects a per-pixel counterfactual. Every project ships with reproducible code, GeoTIFF/vector layers, a methodology report and an interactive viewer showing filters, project-control pairs, distances and weights. Before contacting us: EVI is more season-sensitive than GEDI-derived AGB, so with EVI the proponent ideally supplies local forest plots to confirm the EVI-biomass link; R2, RMSE, bias and residuals are reported per project. TransparenC is also an approved Data Provider for Isometric's Reforestation Protocol.",
+            "email": "nicklas@transparenc.earth",
+            "product": "Two products: EVI from Landsat (30 m) and AGB from Sentinel-2 + GEDI (10 m).",
+            "versions": "Version 1.1",
+            "production": "AGB: a project-specific machine-learning model (gradient boosting / random forest) is trained on Google Satellite Embedding V1 (or Clay embeddings from Sentinel-1/2 for sub-yearly use) paired with GEDI-derived AGB, at 10 m. EVI: derived from Landsat at 30 m. Both use a consistent annual window of at least four low-cloud months (typically June-September) applied the same way every year.",
+            "correlation": "Where possible the Sentinel-2/GEDI AGB product is used directly and its test error, bias, RMSE, R2 and cross-validation are reported. For EVI, proponent plots are used to check the link with biomass; otherwise published regional evidence, quality-filtered GEDI observations or held-out samples are used. We stratify or recalibrate where the relationship is weak.",
+            "limits": "",
+            "resolution": "10m (AGB); 30m (EVI)",
+            "years": "2000-latest complete year",
+            "updateFrequency": "Annual",
+            "regions": "Global",
+            "limitations": "EVI is more sensitive to seasonal variation than GEDI-derived AGB. The EVI-biomass link may be weak in some areas and then needs recalibration or stratification. Models are project-specific.",
+            "projectSize": "",
+            "fieldValidation": "Yes, where possible: proponent-supplied local forest plots or independent AGB data check the EVI/SI-biomass relationship. If none exist, published regional evidence, quality-filtered GEDI observations or held-out validation samples are used.",
+            "whitepaper": "https://drive.google.com/file/d/1R7d-W9eo0ayfG2yqS4tANfAJKveengCd/view?usp=sharing",
+            "methodChanges": "We will notify Verra of any material updates or changes to SI generation methods or selection procedures that affect previously provided project data, and of any proponent-requested changes that do the same. Reproducible, version-controlled code ships with every project.",
+            "apiStatus": "In progress",
+            "deliveryNoApi": "GeoTIFF rasters and vector files, reproducible code, a methodology report and an interactive viewer.",
+            "auditDocumentation": "Yes. Every project ships with reproducible code, a methodology report and an interactive viewer, and documentation is delivered on request from the proponent, Verra or a VVB."
       },
       {
-        id: "varaha",
-        name: "Varaha",
-        hq: "Gurugram, India",
-        founded: "2022",
-        url: "https://www.varaha.earth",
-        requestUrl: "",
-        product: "Varaha SI data products: annual 10 m Sentinel-2 stocking index (harmonised 30 m Landsat before 2017)",
-        summary: "Nature-based carbon removal developer across South and Southeast Asia and West Africa. Its MRV stack combines multi-sensor satellite data, machine learning and field plots to deliver tree-cover, land-use and biomass datasets for VM0047.",
-        approach: "Full-stack ARR MRV experience on VM0047 projects in Bangladesh (registered), India, and Nepal. SI delivered at 10 m (Sentinel-2) and 30 m pre-2017 (Landsat). Specialized dry-season compositing (Nov-Feb) and Sentinel-1 SAR gap-filling for cloud resilience.",
-        email: "",
-        versions: "Version 1.1",
-        production: "Annual Sentinel-2 composites (10m) built from dry-season windows (Nov-Feb in South Asia), Sentinel-1 fills monsoon cloud gaps, DEM illumination correction.",
-        correlation: "Project sample plots with DBH/height converted to AGB with local allometry; project SI-AGB regression evaluated with k-fold and spatially-blocked CV.",
-        limits: "Operating countries listed: India, Nepal, Bangladesh; seasonal windows optimized for South Asia.",
-        resolution: "10m",
-        years: "2000-present",
-        regions: "India, Nepal, Bangladesh",
-        limitations: "Persistent monsoon cloud (mitigated by SAR and dry-season compositing); topographic shadow in mountainous terrain.",
-        fieldValidation: "Project permanent/temporary sample plots (DBH, height, species) cross-validated with R2, RMSE, MAE and bias reported.",
-        whitepaper: "",
-        apiStatus: "In progress",
-        deliveryNoApi: "SI delivered with metadata, valid-pixel counts, quality flags, and project-specific validation report."
+            "id": "varaha",
+            "name": "Varaha",
+            "hq": "Gurugram, India",
+            "founded": "2022",
+            "url": "https://www.varaha.earth",
+            "requestUrl": "",
+            "summary": "Nature-based carbon removal developer across South and Southeast Asia and West Africa, with deep ARR and agroforestry expertise. Its MRV stack combines multi-sensor satellite data, machine learning and field plots to deliver tree-cover, land-use and biomass datasets for VM0047.",
+            "approach": "Full-stack ARR MRV experience on VM0047 projects in Bangladesh (registered), India (under development) and Nepal (listed): eligibility, dynamic performance benchmark setup, remote-sensing baseline and stratification (optical and SAR), field sample plots, carbon stock and uncertainty estimation, and project description and monitoring report preparation. SI is delivered at 10 m from Sentinel-2 (harmonised Landsat at 30 m before 2017), annually, with sub-annual products on request. Seasonal windows follow agro-ecological zones (South Asia: post-monsoon dry season, typically Nov-Feb). Cloud is handled with dry-season compositing and Sentinel-1 gap-filling, and topographic shadow with DEM illumination correction. A project-specific SI-AGB validation report accompanies each SI. Before contacting us: the seasonal windows described are for South Asia, field-plot data is part of the validation workflow, and residual cloud-affected pixels are flagged in a quality mask.",
+            "email": "",
+            "product": "Varaha SI data products: annual 10 m Sentinel-2-based stocking index (harmonised 30 m Landsat before 2017).",
+            "versions": "Version 1.1",
+            "production": "Annual Sentinel-2 composites (bands 2, 3, 4, 8; 20 m bands resampled to 10 m) are built from cloud-masked scenes in agro-ecological-zone seasonal windows (South Asia: typically Nov-Feb), with Sentinel-1 filling cloud gaps and DEM-based illumination correction. Pre-2017 years use harmonised Landsat at 30 m, cross-calibrated to Sentinel-2. Outputs carry metadata, valid-pixel counts and quality flags.",
+            "correlation": "Four steps: classify the project ecoregion and forest type; establish project-specific sample plots (tree inventory converted to plot AGB with local allometry); fit a project-specific SI-AGB regression with k-fold and spatially-blocked cross-validation (R2, RMSE, MAE, bias, residual diagnostics); benchmark against literature and propagate uncertainty. A validation report accompanies each SI.",
+            "limits": "Operating countries listed: India, Nepal and Bangladesh; the seasonal windows described are for South Asia.",
+            "resolution": "10m",
+            "years": "",
+            "updateFrequency": "Annual",
+            "regions": "India, Nepal, Bangladesh",
+            "limitations": "Persistent monsoon cloud (mitigated by dry-season compositing and SAR), topographic shadow in mountains (DEM correction, residual uncertainty reported), and Landsat-Sentinel-2 cross-sensor harmonisation for pre-2017 years.",
+            "projectSize": "",
+            "fieldValidation": "Yes. Project-specific permanent and temporary sample plots (tree DBH, height, species; local allometry) are used for k-fold and spatially-blocked cross-validation, with R2, RMSE, MAE and bias reported on held-out plots.",
+            "whitepaper": "",
+            "methodChanges": "We will notify Verra of any material updates or changes to SI generation methods or selection procedures that affect previously provided project data, and of any proponent-requested changes that do the same.",
+            "apiStatus": "In progress",
+            "deliveryNoApi": "SI delivered with metadata, valid-pixel counts, quality flags and a project-specific SI-AGB validation report.",
+            "auditDocumentation": "Yes. We will deliver the SI dataset, project/control plot inputs and code or process documentation in auditable formats on request from the proponent, Verra or a VVB."
       },
       {
-        id: "sylvera",
-        name: "Sylvera",
-        hq: "London, United Kingdom",
-        founded: "2020",
-        url: "https://www.sylvera.com",
-        requestUrl: "",
-        product: "Biomass Atlas",
-        summary: "Independent carbon data platform offering ratings, pricing intelligence and geospatial lidar monitoring. Biomass Atlas provides annual aboveground biomass maps; for VM0047 it supplies donor pools, stocking-index rasters, matched plots and benchmark results.",
-        approach: "Direct AGB output via bias-corrected regression trained on airborne laser scanning (ALS) and multi-source lidar using canopy height. No secondary SI-to-biomass correlation needed. Demonstrated on Rabo Carbon Bank Trees for Farmers (Brazil, VCS 4727).",
-        email: "louis@sylvera.io",
-        versions: "Version 1.1",
-        production: "Annual Landsat composites feed bias-corrected regression using satellite canopy height to predict AGB (Mg/ha), trained on ALS/lidar with ecoregion-specific models. Temporal profile model fills gaps.",
-        correlation: "AGB is direct primary output. Ground-truthed with ALS and multi-source lidar with destructive field plot allometry.",
-        limits: "Standard terms of service; no secondary correlation step required.",
-        resolution: "30m",
-        years: "2000-present",
-        regions: "Global",
-        limitations: "Optical resolution limited to 30m; green-season compositing window applied to control seasonality.",
-        fieldValidation: "Model labels come from ALS and multi-source lidar validated against destructive harvest plots.",
-        whitepaper: "https://cdn.prod.website-files.com/673b5918a90b730875736def/6986176a5fdb87f36e09d67d_Biomass%20Atlas%20-%20Technical%20Report.pdf",
-        apiStatus: "Completed",
-        deliveryNoApi: "Donor pool in GIS format, SI raster inputs, project/control plots, benchmark results in spreadsheet."
+            "id": "sylvera",
+            "name": "Sylvera",
+            "hq": "London, United Kingdom",
+            "founded": "2020",
+            "url": "https://www.sylvera.com",
+            "requestUrl": "",
+            "summary": "Independent carbon data platform offering ratings, pricing intelligence and geospatial lidar monitoring. Its Biomass Atlas gives annual aboveground biomass maps; for VM0047 it supplies donor pools, stocking-index rasters, matched plots and annual benchmark results.",
+            "approach": "AGB is the model's direct output, so there is no secondary SI-to-biomass correlation step. A bias-corrected regression trained on airborne laser scanning (ALS) and multi-source lidar uses satellite-derived canopy height as its main predictor, with AGB labels from allometry validated against destructive field plots. Separate models per ecoregion fit the height-biomass relationship to each forest type. Landsat-based annual data from 2000 to present at 30 m, with gap-filling so every pixel has an annual value; a pixel-level temporal profile model suppresses seasonal noise, and Biomass Atlas v2 (green-season compositing, due April 2026) restricts imagery to peak-vegetation windows. VM0047 services demonstrated on the Rabo Carbon Bank Trees for Farmers project (Brazil, VCS 4727): Verra-compliant donor pool in GIS format, raster inputs with metadata, random sampling and optimal matching of project and control plots with full boundaries, and annual benchmark results with SDM diagnostics in a spreadsheet.",
+            "email": "louis@sylvera.io",
+            "product": "Biomass Atlas",
+            "versions": "Version 1.1",
+            "production": "Annual Landsat (5/7/8/9) composites from all cloud-free observations feed a bias-corrected regression that uses satellite-derived canopy height to predict aboveground biomass (Mg/ha), trained on airborne laser scanning and multi-source lidar with separate ecoregion models. A pixel-level temporal profile model (constant, linear, B-spline, change-point) suppresses seasonal noise and fills gaps so every pixel has an annual value.",
+            "correlation": "AGB is the model's primary output, so no secondary SI-to-AGB correlation step is needed. Training labels come from ALS and multi-source lidar, converted to AGB with allometry validated against destructive field plots, and separate models per ecoregion fit the AGB-height relationship to each forest type.",
+            "limits": "",
+            "resolution": "30m",
+            "years": "2000-present",
+            "updateFrequency": "Annual",
+            "regions": "Global",
+            "limitations": "",
+            "projectSize": "",
+            "fieldValidation": "Model labels come from airborne and multi-source lidar converted to AGB with allometry validated against destructive field plots; separate ecoregion models are trained.",
+            "whitepaper": "https://cdn.prod.website-files.com/673b5918a90b730875736def/6986176a5fdb87f36e09d67d_Biomass%20Atlas%20-%20Technical%20Report.pdf",
+            "methodChanges": "We will notify Verra of any material updates or changes to SI generation methods or selection procedures that affect previously provided project data, and of any proponent-requested changes that do the same.",
+            "apiStatus": "Completed",
+            "deliveryNoApi": "Donor pool in GIS format, SI raster inputs with metadata, project/control plots with full boundaries, and benchmark results in a spreadsheet.",
+            "auditDocumentation": "Yes. We will deliver the SI dataset, project/control plot inputs and code or process documentation in auditable formats on request from the proponent, Verra or a VVB."
       },
       {
-        id: "kanop",
-        name: "Kanop",
-        hq: "Gif-sur-Yvette, France",
-        founded: "2021",
-        url: "https://www.kanop.io",
-        requestUrl: "",
-        product: "Kanop aboveground biomass (AGB, Mg/ha) at 10 m and 30 m",
-        summary: "Kanop uses AI and satellite data to measure climate and biodiversity impact. Its deep-learning models give aboveground biomass at 10 m and 30 m globally, and it offers end-to-end VM0047 services: dynamic baseline, stocking index, ex-ante estimates and PDD support.",
-        approach: "Deep-learning model trained on ~125 Mha LiDAR reference data (42 Mha airborne LiDAR, 83 Mha GEDI) predicting AGB directly. Optical composites use greenest months (MODIS NDVI) + LandTrendr on NBR + PALSAR-2 dry-season radar mosaics.",
-        email: "romain.fau@kanop.io",
-        versions: "Version 1.1",
-        production: "Deep learning model on 125 Mha LiDAR data. 30 m: Landsat + PALSAR + SRTM (2013-2025). 10 m: Sentinel-1/2 (2017-2025). Median cloud-free optical composite.",
-        correlation: "SI is AGB itself (Mg/ha). Global site-level validation gives R2 0.65 against LiDAR-derived AGB; optional field recalibration via Gaussian Process Regression.",
-        limits: "Requires project boundary and minimum historical depth (T = -8 to T = 0).",
-        resolution: "10m and 30m",
-        years: "2013-2025",
-        regions: "Global",
-        limitations: "High-density multi-canopy tropical saturation beyond 350-400 Mg/ha mitigated via SAR/DEM multi-sensor fusion.",
-        fieldValidation: "Global validation against LiDAR-derived AGB (R2 = 0.65). Proponent field data used for Gaussian Process Regression fusion.",
-        whitepaper: "https://drive.google.com/file/d/1G2tOyzN8-9VDQM19YB3X1UjeNkmqCHdf/view",
-        apiStatus: "In progress",
-        deliveryNoApi: "Direct Cloud GeoTIFF delivery & PDD support package."
+            "id": "kanop",
+            "name": "Kanop",
+            "hq": "Gif-sur-Yvette, France",
+            "founded": "2021",
+            "url": "https://www.kanop.io",
+            "requestUrl": "",
+            "summary": "Kanop uses AI and satellite data to measure climate and biodiversity impact. Its deep-learning models give aboveground biomass at 10 m and 30 m globally, and it offers end-to-end VM0047 services: dynamic baseline, stocking index, ex-ante estimates and PDD support.",
+            "approach": "SI is aboveground biomass (AGB, Mg/ha) itself, not a vegetation index such as NDVI that saturates in dense vegetation. A deep-learning model trained on about 125 Mha of reference data (42 Mha airborne LiDAR plus 83 Mha GEDI) predicts AGB at 30 m (Landsat + PALSAR, 2013-2025) and 10 m (adds Sentinel-1/2, 2017-2025), both with SRTM DEM. Optical composites use the greenest months (MODIS NDVI), cloud-masked and BRDF-corrected, with LandTrendr on NBR to stabilise mature forest; PALSAR-2 dry-season mosaics add HH, HV and RVI layers. Global site-level validation gives R2 0.65 against LiDAR-derived AGB, and optional project recalibration with field data (Gaussian Process Regression fusion) gives a default 95% confidence interval. Annual SI is delivered from at least T = -8 through T = 0, then every year. Kanop supports the full VM0047 workflow: dynamic baseline, SI generation, ex-ante estimates and PDD support.",
+            "email": "romain.fau@kanop.io",
+            "product": "Kanop aboveground biomass (AGB, Mg/ha) at 10 m and 30 m.",
+            "versions": "Version 1.1",
+            "production": "A deep-learning model trained on about 125 Mha of LiDAR reference data predicts AGB (Mg/ha). 30 m product: Landsat + PALSAR + SRTM DEM (2013-2025). 10 m product: adds Sentinel-1/2 (2017-2025). Optical composites use the greenest months (MODIS NDVI), cloud-masked and BRDF-corrected (median of the least cloudy 60%); LandTrendr on NBR stabilises mature forest; PALSAR-2 dry-season mosaics give HH, HV and RVI.",
+            "correlation": "SI is AGB itself (Mg/ha). The model is trained on about 125 Mha of structural reference data (42 Mha airborne LiDAR, 83 Mha GEDI); global site-level validation gives R2 0.65 against LiDAR-derived AGB. Optional project recalibration with field measurements (Gaussian Process Regression fusion, inverse-variance weighting) gives a default 95% confidence interval.",
+            "limits": "",
+            "resolution": "10m and 30m",
+            "years": "2013-2025",
+            "updateFrequency": "Annual",
+            "regions": "Global",
+            "limitations": "",
+            "projectSize": "",
+            "fieldValidation": "Global site-level validation against LiDAR-derived AGB (R2 = 0.65). Field measurements are used for optional project recalibration (Gaussian Process Regression fusion) with a 95% confidence interval.",
+            "whitepaper": "https://drive.google.com/file/d/1G2tOyzN8-9VDQM19YB3X1UjeNkmqCHdf/view",
+            "methodChanges": "We will notify Verra of any material updates or changes to SI generation methods or selection procedures that affect previously provided project data, and of any proponent-requested changes that do the same.",
+            "apiStatus": "In progress",
+            "deliveryNoApi": "",
+            "auditDocumentation": "Yes. We will deliver the SI dataset, project/control plot inputs and code or process documentation in auditable formats on request from the proponent, Verra or a VVB."
       },
       {
-        id: "chloris",
-        name: "Chloris Geospatial",
-        hq: "Boston, Massachusetts, United States",
-        founded: "2021",
-        url: "https://www.chloris.earth",
-        requestUrl: "https://www.chloris.earth/key-documents",
-        product: "Chloris AGBD (aboveground biomass density) stocking index, 30 m",
-        summary: "Chloris Geospatial uses machine learning on multi-satellite data to estimate aboveground biomass stock, biomass change and forest cover change. For VM0047 it supplies an annual AGBD stocking index (2000-2025) and a full dynamic baselining workflow.",
-        approach: "Direct AGBD estimates (Baccini et al. approach) validated across all Olson biomes: NEON plots R2 0.76, USFS FIA plots R2 0.90, Brazilian airborne-lidar transects R2 0.74-0.90. Full annual grid 2000-2025.",
-        email: "asha@chloris.earth",
-        versions: "Version 1.1",
-        production: "Landsat acquisitions aligned to 30 m grid, NBAR corrected, custom cloud-masked. Machine learning model predicts AGBD with temporal context from prior/subsequent years.",
-        correlation: "GEDI comparison across Olson biomes, NEON plots (R2 0.76), USFS FIA (R2 0.90), Brazil LiDAR transects (R2 0.74-0.90).",
-        limits: "Proponent must provide shapefiles and coordinate reference systems.",
-        resolution: "30m",
-        years: "2000-2025",
-        regions: "Global",
-        limitations: "Residual cloud contamination in persistently cloud-covered tropics handled with custom cloud masks.",
-        fieldValidation: "NEON field plots (R2=0.76), USFS FIA plots (R2=0.90), Brazilian airborne-lidar transects (R2=0.74-0.90).",
-        whitepaper: "https://www.chloris.earth/key-documents",
-        apiStatus: "In progress",
-        deliveryNoApi: "API delivery and cloud raster package."
+            "id": "chloris",
+            "name": "Chloris Geospatial",
+            "hq": "Boston, Massachusetts, United States",
+            "founded": "2021",
+            "url": "https://www.chloris.earth",
+            "requestUrl": "https://www.chloris.earth/key-documents",
+            "summary": "Chloris Geospatial uses machine learning on multi-satellite data to estimate aboveground biomass stock, biomass change and forest cover change. For VM0047 it supplies an annual AGBD stocking index (2000-2025) and a full dynamic baselining workflow.",
+            "approach": "Direct AGBD estimates (not a proxy index) using the Baccini et al. (2012, 2017) approach, correlated with independent biomass data across biomes: a GEDI comparison across all Olson biomes, NEON plots R2 0.76, USFS FIA plots R2 0.90 and Brazilian airborne-lidar transects R2 0.74-0.90. Delivered at 30 m on a fixed annual grid from 2000 to the latest complete year (2025). Annual predictions use all Landsat imagery for the target year with context from previous and later years for year-to-year coherence; images are NBAR-corrected and masked with the Landsat QA layer plus a custom cloud mask. For each project, correlation is shown with customer field measurements, public regional datasets or, if neither exists, GEDI-derived biomass. Offers AGB data and a full dynamic baselining workflow. Before contacting us: the dedicated validation white paper was expected April/May 2026; white papers (Data and Model Update, The Chloris Technology, VM0047 Performance Method with Chloris) are on the Chloris key documents page.",
+            "email": "asha@chloris.earth",
+            "product": "Chloris AGBD (aboveground biomass density) stocking index, 30 m.",
+            "versions": "Version 1.1",
+            "production": "Landsat acquisitions are aligned to a fixed 30 m grid, corrected to NBAR reflectance, and masked with the Landsat QA layer plus a custom cloud mask. A machine-learning model (Baccini et al. method) predicts AGBD using all imagery in the target year plus context from previous and subsequent years. Maps are reprojected to a regional equal-area projection, keeping 30 m pixels.",
+            "correlation": "Comparison with GEDI shows strong correlation across all Olson biomes; independent validation includes NEON field plots (R2 = 0.76), USFS FIA plots (R2 = 0.90) and Brazilian airborne-lidar biomass transects (R2 = 0.74-0.90). For each project, correlation is shown with customer field measurements, public regional datasets or GEDI-derived biomass.",
+            "limits": "",
+            "resolution": "30m",
+            "years": "2000-2025",
+            "updateFrequency": "Annual",
+            "regions": "Global",
+            "limitations": "Some cloud contamination can remain even after QA masking; Chloris applies its own custom cloud mask to reduce it.",
+            "projectSize": "",
+            "fieldValidation": "Yes: NEON field plots (R2 = 0.76), USFS FIA plots (R2 = 0.90), airborne-lidar biomass transects in Brazil (R2 = 0.74-0.90); customer field data are used for individual projects.",
+            "whitepaper": "https://www.chloris.earth/key-documents",
+            "methodChanges": "We will notify Verra of any material updates or changes to SI generation methods or selection procedures that affect previously provided project data, and of any proponent-requested changes that do the same.",
+            "apiStatus": "In progress",
+            "deliveryNoApi": "",
+            "auditDocumentation": "Yes. We will deliver the SI dataset, project/control plot inputs and code or process documentation in auditable formats on request from the proponent, Verra or a VVB."
       }
-    ];
+];
 
     // Render Grid Cards
     const grid = document.getElementById("dspGrid");
+    const dspLogos = {
+      belian: "./Dsp_logos/belian_earth.png",
+      chloris: "./Dsp_logos/chloris.png",
+      cyclops: "./Dsp_logos/CYCLOPS-logo-black.png",
+      kanop: "./Dsp_logos/kanop.png",
+      lobelia: "./Dsp_logos/logo-lobelia-black.svg",
+      sylvera: "./Dsp_logos/sylvera.png",
+      terracarbon: "./Dsp_logos/terracarbon.png",
+      treefera: "./Dsp_logos/Treefera_Logo_Tagline%20Stacked_Black.png",
+      tspc: "./Dsp_logos/transparenc-logo-light-background.svg",
+      varaha: "./Dsp_logos/varaha-logo.svg"
+    };
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[character]);
+    }
+
+    function safeWebUrl(value) {
+      try {
+        const url = new URL(value);
+        return ["http:", "https:"].includes(url.protocol) ? escapeHtml(url.href) : "";
+      } catch {
+        return "";
+      }
+    }
+
+    function detailSection(label, value) {
+      return `
+        <section class="detail-section">
+          <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">${label}</h4>
+          <p class="leading-relaxed">${escapeHtml(value || "Not provided in response.")}</p>
+        </section>
+      `;
+    }
+
     function render(items) {
+      document.getElementById("resultsCount").textContent =
+        `${items.length} ${items.length === 1 ? "provider" : "providers"}`;
       grid.innerHTML = "";
       if (items.length === 0) {
-        grid.innerHTML = `<div class="col-span-full py-16 text-center text-slate-400">No DSP matches your search filters.</div>`;
+        grid.innerHTML = `<div class="col-span-full rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-16 text-center text-slate-500">No providers match these filters. Try changing your search or selections.</div>`;
         return;
       }
 
@@ -343,44 +980,53 @@
         const badgeColor = isCompleted ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800";
 
         const card = document.createElement("div");
-        card.className = "bg-white border border-slate-200 rounded-xl p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between";
+        card.className = "dsp-card bg-white border border-slate-200 rounded-xl p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between";
         card.innerHTML = `
           <div>
+            ${dspLogos[d.id] ? `<div class="dsp-provider-logo-frame"><img class="dsp-provider-logo" src="${escapeHtml(dspLogos[d.id])}" alt="${escapeHtml(d.name)} logo" loading="lazy" decoding="async"></div>` : ''}
             <div class="flex items-start justify-between gap-2 mb-2">
-              <h2 class="font-bold text-lg text-slate-900">${d.name}</h2>
-              <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${badgeColor}">
-                API: ${d.apiStatus}
+              <h2 class="font-bold text-lg text-slate-900">${escapeHtml(d.name)}</h2>
+              <span class="api-status inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${badgeColor}">
+                API: ${escapeHtml(d.apiStatus)}
               </span>
             </div>
-            <p class="text-xs text-slate-400 mb-3">${d.hq} ${d.founded ? '• Est. ' + d.founded : ''}</p>
-            <p class="text-xs text-slate-600 line-clamp-3 mb-4">${d.summary}</p>
+            <p class="dsp-location mb-3">${escapeHtml(d.hq)} ${d.founded ? '• Est. ' + escapeHtml(d.founded) : ''}</p>
+            <p class="dsp-summary line-clamp-3 mb-4">${escapeHtml(d.summary)}</p>
             
-            <div class="space-y-1.5 py-3 border-t border-slate-100 text-xs">
+            <div class="dsp-facts space-y-1.5 py-3 border-t border-slate-100 text-xs">
               <div class="flex justify-between">
                 <span class="text-slate-400">Resolution:</span>
-                <span class="font-semibold text-slate-700">${d.resolution}</span>
+                <span class="font-semibold text-slate-700">${escapeHtml(d.resolution || "Not provided")}</span>
               </div>
               <div class="flex justify-between">
-                <span class="text-slate-400">Historical Series:</span>
-                <span class="font-semibold text-slate-700">${d.years || 'Annual'}</span>
+                <span class="text-slate-400">SI years:</span>
+                <span class="font-semibold text-slate-700">${escapeHtml(d.years || "Not provided")}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-400">Update frequency:</span>
+                <span class="font-semibold text-slate-700">${escapeHtml(d.updateFrequency || "Not provided")}</span>
               </div>
               <div class="flex justify-between">
                 <span class="text-slate-400">Regions Served:</span>
-                <span class="font-semibold text-slate-700">${d.regions}</span>
+                <span class="font-semibold text-slate-700">${escapeHtml(d.regions || "Not provided")}</span>
               </div>
             </div>
           </div>
 
-          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
-            <button onclick="openModal('${d.id}')" class="text-xs font-semibold text-emerald-700 hover:text-emerald-900 bg-emerald-50 hover:bg-emerald-100 px-3 py-1.5 rounded-md transition">
-              Full Details & Method →
+          <div class="dsp-actions mt-4 pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+            <button onclick="openModal('${d.id}')" class="registry-action text-xs font-semibold px-3 py-1.5 rounded-md transition">
+              Full Details →
             </button>
             <div class="flex items-center gap-2">
-              ${d.url ? `<a href="${d.url}" target="_blank" class="text-slate-400 hover:text-slate-600 p-1" title="Website"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></a>` : ''}
-              ${d.email ? `<a href="mailto:${d.email}" class="text-slate-400 hover:text-slate-600 p-1" title="Email"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></a>` : ''}
+              ${d.url ? `<a href="${safeWebUrl(d.url)}" target="_blank" rel="noopener noreferrer" class="quick-link text-slate-400 hover:text-slate-600 p-1" title="Website" aria-label="Visit ${escapeHtml(d.name)} website"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></a>` : ''}
+              ${d.email ? `<a href="mailto:${escapeHtml(d.email)}" class="quick-link text-slate-400 hover:text-slate-600 p-1" title="Email" aria-label="Email ${escapeHtml(d.name)}"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></a>` : ''}
             </div>
           </div>
         `;
+        card.addEventListener("click", event => {
+          if (event.target.closest("a, button")) return;
+          openModal(d.id);
+        });
         grid.appendChild(card);
       });
     }
@@ -394,51 +1040,27 @@
       document.getElementById("modalSubtitle").innerText = `${d.hq} | VM0047 Version: ${d.versions}`;
 
       let linksHtml = '';
-      if (d.url) linksHtml += `<a href="${d.url}" target="_blank" class="text-emerald-700 hover:underline mr-4">Website ↗</a>`;
-      if (d.requestUrl) linksHtml += `<a href="${d.requestUrl}" target="_blank" class="text-emerald-700 hover:underline mr-4">Request SI Agreement ↗</a>`;
-      if (d.whitepaper) linksHtml += `<a href="${d.whitepaper}" target="_blank" class="text-emerald-700 hover:underline mr-4">Public Whitepaper ↗</a>`;
-      if (d.email) linksHtml += `<a href="mailto:${d.email}" class="text-emerald-700 hover:underline">Contact: ${d.email}</a>`;
+      if (d.url && safeWebUrl(d.url)) linksHtml += `<a href="${safeWebUrl(d.url)}" target="_blank" rel="noopener noreferrer" class="text-emerald-700 hover:underline mr-4">Website ↗</a>`;
+      if (d.requestUrl && safeWebUrl(d.requestUrl)) linksHtml += `<a href="${safeWebUrl(d.requestUrl)}" target="_blank" rel="noopener noreferrer" class="text-emerald-700 hover:underline mr-4">Request SI Agreement ↗</a>`;
+      if (d.whitepaper && safeWebUrl(d.whitepaper)) linksHtml += `<a href="${safeWebUrl(d.whitepaper)}" target="_blank" rel="noopener noreferrer" class="text-emerald-700 hover:underline mr-4">Public Whitepaper ↗</a>`;
+      if (d.email) linksHtml += `<a href="mailto:${escapeHtml(d.email)}" class="text-emerald-700 hover:underline">Contact: ${escapeHtml(d.email)}</a>`;
 
       document.getElementById("modalContent").innerHTML = `
         <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs leading-relaxed">
-          <strong class="text-slate-800">Quick Links:</strong> ${linksHtml || 'None provided'}
+          <strong class="text-slate-800">Quick Links:</strong> ${linksHtml || 'None provided in response.'}
         </div>
 
-        <div>
-          <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">SI Product Name</h4>
-          <p class="text-slate-900 font-medium">${d.product}</p>
-        </div>
-
-        <div>
-          <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Approach & Suitability for ARR</h4>
-          <p class="leading-relaxed">${d.approach}</p>
-        </div>
-
-        <div>
-          <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">How SI is Produced (Imagery to Dataset)</h4>
-          <p class="leading-relaxed">${d.production}</p>
-        </div>
-
-        <div>
-          <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Correlation with AGB</h4>
-          <p class="leading-relaxed">${d.correlation}</p>
-        </div>
-
-        <div>
-          <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Field Plot Validation</h4>
-          <p class="leading-relaxed">${d.fieldValidation}</p>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-slate-100 pt-3">
-          <div>
-            <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Limitations & Saturation</h4>
-            <p class="text-xs text-slate-600">${d.limitations || 'Standard remote sensing limitations apply.'}</p>
-          </div>
-          <div>
-            <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Non-API Delivery</h4>
-            <p class="text-xs text-slate-600">${d.deliveryNoApi || 'Standard cloud delivery.'}</p>
-          </div>
-        </div>
+        ${detailSection("SI Product Name", d.product)}
+        ${detailSection("Approach: Suitability for ARR and What Proponents Should Know", d.approach)}
+        ${detailSection("How the SI Is Produced", d.production)}
+        ${detailSection("How SI Correlation with AGB Is Shown", d.correlation)}
+        ${detailSection("Limits or Conditions on Use of Data", d.limits)}
+        ${detailSection("Limitations of the Data", d.limitations)}
+        ${detailSection("Validation Against Field Plot Data", d.fieldValidation)}
+        ${detailSection("Typical Project Size Range (ha)", d.projectSize)}
+        ${detailSection("Handling and Communicating SI Method Changes", d.methodChanges)}
+        ${detailSection("Data Delivery if No API Connection Yet", d.deliveryNoApi)}
+        ${detailSection("Auditable Documentation on Request", d.auditDocumentation)}
       `;
 
       document.body.classList.add("modal-open");
@@ -457,10 +1079,12 @@
       const res = document.getElementById("resolutionFilter").value;
 
       const filtered = dspData.filter(d => {
-        const matchesQuery = d.name.toLowerCase().includes(q) || 
-                             d.summary.toLowerCase().includes(q) || 
-                             d.product.toLowerCase().includes(q) || 
-                             d.hq.toLowerCase().includes(q);
+        const searchableText = [
+          d.name, d.hq, d.summary, d.product, d.approach, d.production,
+          d.correlation, d.limits, d.limitations, d.fieldValidation,
+          d.methodChanges, d.auditDocumentation
+        ].join(" ").toLowerCase();
+        const matchesQuery = searchableText.includes(q);
         const matchesStatus = status ? d.apiStatus === status : true;
         const matchesRes = res ? d.resolution.includes(res) : true;
         return matchesQuery && matchesStatus && matchesRes;
