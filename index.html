@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VM0047 Data Service Providers (DSPs) Directory</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -11,7 +14,7 @@
         extend: {
           colors: {
             slate: {
-              50: "#f5f8fc",
+              50: "#e2e9f1",
               100: "#eef3fc",
               200: "#e2e9f3",
               300: "#cdd8e8",
@@ -43,53 +46,18 @@
       --pr-ink-deep: #0a2050;
       --pr-green: #82c34f;
       --pr-teal: #047299;
-      --pr-paper: #f5f8fc;
-      --pr-line: #e2e9f3;
+      --pr-paper: #e2e9f1;
+      --pr-line: #bfcbd9;
+      --pr-line-subtle: #dde4ee;
       --pr-radius-control: 15px;
       --pr-radius-card: 22px;
-      --pr-radius-panel: 26px;
-      --pr-header-surface: rgba(14, 43, 100, 0.92);
-    }
-
-    @font-face {
-      font-family: "Figtree";
-      src: url("/assets/fonts/figtree/figtree-variable.woff2") format("woff2-variations");
-      font-weight: 300 700;
-      font-style: normal;
-      font-display: swap;
-    }
-
-    @font-face {
-      font-family: "Fraunces";
-      src: url("/assets/fonts/fraunces/fraunces-variable.woff2") format("woff2-variations");
-      font-weight: 300 700;
-      font-style: normal;
-      font-display: swap;
-    }
-
-    @font-face {
-      font-family: "Fraunces";
-      src: url("/assets/fonts/fraunces/fraunces-variable-italic.woff2") format("woff2-variations");
-      font-weight: 300 700;
-      font-style: italic;
-      font-display: swap;
     }
 
     body {
       display: flex;
       flex-direction: column;
-      background:
-        radial-gradient(ellipse at 85% 0, rgba(58, 157, 196, 0.08), transparent 35rem),
-        var(--pr-paper);
-      font-family: "Figtree", "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-
-    .modal-open { overflow: hidden; }
-
-    .registry-header,
-    .directory-footer,
-    .site-footer {
-      flex-shrink: 0;
+      background: var(--pr-paper);
+      font-family: "Be Vietnam Pro", Arial, sans-serif;
     }
 
     main {
@@ -97,91 +65,149 @@
       width: 100%;
     }
 
+    .dsp-toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      min-height: 58px;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px 24px;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0.75rem 24px;
+      border-bottom: 1px solid var(--pr-line);
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 4px 12px rgba(14, 43, 100, 0.06);
+      backdrop-filter: blur(12px);
+    }
+
+    .dsp-toolbar-title {
+      position: relative;
+      flex: 0 0 auto;
+      margin: 0;
+      padding-left: 12px;
+      color: #26303d;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+    }
+
+    .dsp-toolbar-title::before {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 3px;
+      height: 18px;
+      border-radius: 999px;
+      background: #2563eb;
+      content: "";
+      transform: translateY(-50%);
+    }
+
+    @media (max-width: 768px) {
+      .dsp-toolbar-title {
+        font-size: 17px;
+      }
+    }
+
+    .directory-content {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0 clamp(16px, 2.5vw, 32px);
+    }
+
     .directory-main {
-      padding-top: clamp(1.5rem, 4vw, 3rem);
-      padding-bottom: clamp(2rem, 5vw, 3.5rem);
+      padding-top: 1.5rem;
+      padding-bottom: 2.5rem;
     }
 
-    .registry-header {
-      background: var(--pr-header-surface);
-      backdrop-filter: saturate(150%) blur(14px);
-      -webkit-backdrop-filter: saturate(150%) blur(14px);
-      border-color: rgba(255, 255, 255, 0.08);
-      box-shadow: 0 12px 30px -18px rgba(0, 0, 0, 0.6);
+    .usage-guidance {
+      margin-bottom: 1.5rem;
+      padding: 1rem 1.25rem;
+      border: 1px solid var(--pr-line);
+      border-radius: 14px;
+      background: #fff;
+      color: #465875;
+      font-size: 0.88rem;
+      line-height: 1.65;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.08);
     }
 
-    .registry-header h1 {
-      color: #fff;
-      font-family: "Fraunces", ui-serif, Georgia, serif;
-      font-weight: 600;
-      letter-spacing: -0.035em;
-      text-align: center;
-      font-size: clamp(1.35rem, 2.5vw, 1.875rem);
-      line-height: 1.15;
-    }
-
-    .registry-heading-row {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .registry-brand {
-      display: inline-flex;
-      align-items: center;
-      color: #fff;
-    }
-
-    .registry-heading-spacer {
-      justify-self: end;
-      width: 109px;
-    }
-
-    .registry-brand-logo {
+    .usage-guidance strong {
       display: block;
-      width: 109px;
-      height: 40px;
-      object-fit: contain;
-      filter: brightness(0) invert(1);
+      margin-bottom: 0.35rem;
+      color: var(--pr-ink);
+      font-size: 0.95rem;
     }
 
-    .dsp-card h2,
-    .modal-panel h3,
-    .detail-section h4 {
-      font-family: "Fraunces", ui-serif, Georgia, serif;
+    .usage-guidance p {
+      margin: 0;
     }
 
-    @media (max-width: 639px) {
-      .registry-heading-row {
-        grid-template-columns: auto 1fr;
-        gap: 0.75rem;
-      }
+    .usage-guidance p + p {
+      margin-top: 0.5rem;
+    }
 
-      .registry-brand-logo {
-        width: 76px;
-        height: auto;
-      }
+    .provider-group + .provider-group {
+      margin-top: 2.5rem;
+    }
 
-      .registry-header h1 {
-        font-size: clamp(1.15rem, 5vw, 1.5rem);
-      }
+    .provider-group-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1.25rem;
+      margin-bottom: 1rem;
+    }
 
-      .registry-heading-spacer {
-        display: none;
-      }
+    .provider-group-heading h3 {
+      margin: 0;
+      color: var(--pr-ink);
+      font-size: clamp(1.2rem, 2vw, 1.5rem);
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .provider-group-heading p {
+      max-width: 900px;
+      margin: 0.4rem 0 0;
+      color: #53647e;
+      font-size: 0.9rem;
+      line-height: 1.65;
+    }
+
+    .provider-group-count {
+      flex: 0 0 auto;
+      padding: 0.4rem 0.7rem;
+      border: 1px solid var(--pr-line);
+      border-radius: 999px;
+      background: #fff;
+      color: #465875;
+      font-size: 0.78rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .dsp-card h2 {
+      font-family: inherit;
     }
 
     .search-controls {
       display: grid;
-      grid-template-columns: minmax(0, 1.7fr) repeat(2, minmax(180px, 1fr));
-      gap: 14px;
-      margin-bottom: 2rem;
-      padding: clamp(16px, 2.5vw, 24px);
-      border: 1px solid var(--pr-line);
-      border-radius: 22px;
-      background: #fff;
-      box-shadow: 0 14px 34px rgba(14, 43, 100, 0.08);
+      flex: 1 1 620px;
+      grid-template-columns: minmax(180px, 1.4fr) repeat(2, minmax(150px, 1fr));
+      gap: 12px;
+      min-width: 0;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
     }
 
     .filter-field {
@@ -202,14 +228,14 @@
     .search-controls input,
     .search-controls select {
       width: 100%;
-      min-height: 48px;
-      border: 1px solid #d7e1ed;
-      border-radius: 14px;
-      padding: 0 15px;
-      background-color: #f9fbfd;
+      min-height: 40px;
+      border: 1px solid var(--pr-line);
+      border-radius: 8px;
+      padding: 0 12px;
+      background-color: #f7f9fc;
       color: var(--pr-ink);
       font: inherit;
-      font-size: 0.92rem;
+      font-size: 0.86rem;
       box-shadow: none;
       transition: border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
     }
@@ -217,9 +243,9 @@
     .search-controls input:focus,
     .search-controls select:focus {
       outline: none;
-      border-color: var(--pr-green);
+      border-color: #2563eb;
       background-color: #fff;
-      box-shadow: 0 0 0 4px rgba(130, 195, 79, 0.18);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.16);
     }
 
     .directory-intro {
@@ -227,16 +253,14 @@
       align-items: end;
       justify-content: space-between;
       gap: 16px;
-      margin-bottom: 16px;
+      margin-bottom: 1.25rem;
     }
 
     .directory-intro h2 {
       margin: 0;
       color: var(--pr-ink);
-      font-family: "Fraunces", ui-serif, Georgia, serif;
       font-size: clamp(1.5rem, 2.5vw, 2rem);
-      font-weight: 600;
-      letter-spacing: -0.025em;
+      font-weight: 700;
       line-height: 1.15;
     }
 
@@ -249,16 +273,19 @@
     .results-count {
       flex: 0 0 auto;
       padding: 8px 13px;
-      border: 1px solid #dce8d3;
+      border: 1px solid var(--pr-line);
       border-radius: 999px;
-      background: #f0f7e9;
-      color: #2f6b1e;
+      background: #eff6ff;
+      color: #1d4ed8;
       font-size: 0.82rem;
       font-weight: 650;
       white-space: nowrap;
     }
 
     .dsp-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+      gap: 1.25rem;
       align-items: stretch;
     }
 
@@ -306,7 +333,7 @@
 
     .dsp-card .dsp-facts {
       margin-top: 1.1rem;
-      border-color: #edf1f6;
+      border-color: var(--pr-line-subtle);
       font-size: 0.78rem;
     }
 
@@ -322,34 +349,23 @@
     .dsp-card .dsp-actions {
       margin-top: 1.25rem;
       padding-top: 1rem;
-      border-color: #edf1f6;
-    }
-
-    .dsp-card .registry-action {
-      padding: 0.7rem 1rem;
-      font-size: 0.82rem;
+      border-color: var(--pr-line-subtle);
     }
 
     .dsp-card .api-status {
       flex: 0 0 auto;
     }
 
-    .dsp-card .quick-link {
-      display: inline-flex;
-      width: 36px;
-      height: 36px;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid #e2e9f3;
-      border-radius: 12px;
-      background: #f8fafd;
-      transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+    .api-status.status-completed {
+      border: 1px solid #a7f3d0;
+      background: #ecfdf5;
+      color: #15803d;
     }
 
-    .dsp-card .quick-link:hover {
-      border-color: #cdd8e8;
-      background: #eef3fc;
-      color: var(--pr-ink);
+    .api-status.status-in-progress {
+      border: 1px solid #fde68a;
+      background: #fffbeb;
+      color: #b45309;
     }
 
     @media (max-width: 767px) {
@@ -360,9 +376,31 @@
       .filter-field:first-child {
         grid-column: 1 / -1;
       }
+
+      .dsp-toolbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .search-controls {
+        width: 100%;
+        flex-basis: auto;
+      }
     }
 
     @media (max-width: 520px) {
+      .dsp-toolbar {
+        padding-inline: 12px;
+      }
+
+      .directory-content {
+        padding-inline: 12px;
+      }
+
+      .usage-guidance {
+        padding: 0.9rem;
+      }
+
       .directory-intro {
         align-items: start;
         flex-direction: column;
@@ -374,6 +412,11 @@
 
       .filter-field:first-child {
         grid-column: auto;
+      }
+
+      .provider-group-heading {
+        flex-direction: column;
+        gap: 0.6rem;
       }
 
       .dsp-card {
@@ -394,24 +437,44 @@
       position: relative;
       overflow: hidden;
       cursor: pointer;
-      border-color: var(--pr-line);
       border-radius: var(--pr-radius-card);
-      box-shadow: 0 8px 24px rgba(14, 43, 100, 0.07);
       transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
     }
 
-    .dsp-card::before {
-      position: absolute;
-      inset: 0 0 auto;
-      height: 3px;
-      background: linear-gradient(90deg, var(--pr-green), #3a9dc4);
-      content: "";
+    .dsp-card.border {
+      border-color: var(--pr-line);
     }
 
-    .dsp-card:hover {
+    .dsp-card.shadow-sm {
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    .dsp-card.border:hover,
+    .dsp-card.border:focus-within {
       transform: translateY(-3px);
-      border-color: #c5d6e9;
-      box-shadow: 0 16px 32px rgba(14, 43, 100, 0.13);
+      border-color: #94a3b8;
+    }
+
+    .dsp-card.shadow-sm:hover,
+    .dsp-card.shadow-sm:focus-within {
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .dsp-card:focus-visible {
+      outline: 3px solid #047299;
+      outline-offset: 3px;
+    }
+
+    .registry-action:focus-visible,
+    .detail-back-link:focus-visible,
+    .detail-quick-links a:focus-visible {
+      outline: 3px solid #047299;
+      outline-offset: 3px;
+    }
+
+    .dsp-card .quick-link {
+      position: relative;
+      z-index: 1;
     }
 
     .dsp-card > div:first-child > div:first-child > span {
@@ -420,111 +483,154 @@
     }
 
     .registry-action {
-      background: var(--pr-green);
-      color: #173c16;
-      border-radius: 12px;
-      box-shadow: 0 6px 14px rgba(130, 195, 79, 0.2);
-    }
-
-    .registry-action:hover {
-      background: #74b542;
-      color: #102d12;
-    }
-
-    .detail-modal {
-      background: rgba(7, 22, 52, 0.72);
-    }
-
-    .modal-panel {
-      border: 1px solid rgba(226, 233, 243, 0.8);
-      border-radius: var(--pr-radius-panel);
-      box-shadow: 0 30px 80px rgba(7, 22, 52, 0.3);
-    }
-
-    .modal-heading {
-      background:
-        radial-gradient(ellipse at 90% 0, rgba(58, 157, 196, 0.14), transparent 22rem),
-        #f5f8fc;
-    }
-
-    .modal-close:focus-visible,
-    .modal-close:hover {
-      color: var(--pr-ink);
-      background: #e2e9f3;
-    }
-
-    .modal-panel button {
-      border-radius: 12px;
-    }
-
-    #modalContent > div {
-      border-radius: 14px;
-    }
-
-    #modalContent > .detail-section {
-      padding: 14px 16px;
-      border: 1px solid var(--pr-line);
-      background: linear-gradient(135deg, #fff, #f8fafd);
-    }
-
-    .detail-section h4 {
-      color: var(--pr-teal);
-    }
-
-    #modalContent button,
-    #modalContent a {
-      border-radius: 10px;
-    }
-
-    .site-footer {
-      background: var(--pr-header-surface);
-      color: #fff;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      backdrop-filter: saturate(150%) blur(14px);
-      -webkit-backdrop-filter: saturate(150%) blur(14px);
-    }
-
-    .site-footer-content {
-      display: flex;
-      flex-direction: column;
+      display: inline-flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 4px 16px;
-      width: 100%;
-      min-height: 56px;
-      box-sizing: border-box;
-      padding: 8px clamp(16px, 4vw, 32px);
-      font-size: 14px;
-      line-height: 1.5;
-      font-weight: 400;
-    }
-
-    .site-footer p {
-      margin: 0;
-    }
-
-    .site-footer-links {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: center;
-      gap: 4px 16px;
-    }
-
-    .site-footer a {
+      padding: 0.7rem 1rem;
+      background: #00aec6;
       color: #fff;
+      border-radius: 12px;
       text-decoration: none;
     }
 
-    .site-footer a:hover {
+    .registry-action:hover {
+      background: #067198;
+      color: #fff;
+    }
+
+    .dsp-detail-page {
+      padding-top: 1.5rem;
+      padding-bottom: 2.5rem;
+    }
+
+    .detail-back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+      color: #19386e;
+      font-size: 0.92rem;
+      font-weight: 650;
+      text-decoration: none;
+    }
+
+    .detail-back-link:hover {
       text-decoration: underline;
       text-underline-offset: 3px;
     }
 
-    @media (min-width: 768px) {
-      .site-footer-content {
-        flex-direction: row;
-      }
+    .detail-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+      padding: clamp(1.25rem, 3vw, 2rem);
+      border: 1px solid var(--pr-line);
+      border-radius: 18px;
+      background: #fff;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    .detail-hero h2 {
+      margin: 0 0 0.5rem;
+      color: var(--pr-ink);
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 700;
+    }
+
+    .detail-hero p {
+      margin: 0;
+      color: #53647e;
+      line-height: 1.65;
+    }
+
+    .integration-explanation {
+      margin-top: 0.75rem !important;
+      color: #465875 !important;
+      font-size: 0.86rem;
+    }
+
+    .detail-logo-frame {
+      display: flex;
+      width: 180px;
+      min-height: 96px;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      border: 1px solid var(--pr-line-subtle);
+      border-radius: 14px;
+      background: #f7f9fc;
+    }
+
+    .detail-logo-frame img {
+      max-width: 100%;
+      max-height: 64px;
+      object-fit: contain;
+    }
+
+    .detail-quick-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      border: 1px solid var(--pr-line);
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    .detail-quick-links a {
+      color: #19386e;
+      font-weight: 600;
+    }
+
+    .detail-sections {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .detail-section {
+      padding: 1.125rem 1.25rem;
+      border: 1px solid var(--pr-line);
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    .detail-section h3 {
+      margin: 0 0 0.5rem;
+      color: var(--pr-teal);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .detail-section p {
+      margin: 0;
+      color: #465875;
+      font-size: 0.92rem;
+      line-height: 1.7;
+      white-space: pre-line;
+    }
+
+    .not-found-state {
+      padding: 3rem 1.5rem;
+      border: 1px dashed var(--pr-line);
+      border-radius: 18px;
+      background: #fff;
+      text-align: center;
+    }
+
+    .not-found-state h2 {
+      margin: 0 0 0.5rem;
+      color: var(--pr-ink);
+    }
+
+    .not-found-state p {
+      margin: 0 0 1rem;
+      color: #53647e;
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -539,43 +645,23 @@
     }
 
     @media (max-width: 639px) {
-      .search-controls {
-        padding: 14px;
-        border-radius: 18px;
+      .detail-hero {
+        grid-template-columns: minmax(0, 1fr);
       }
 
-      .modal-panel {
-        border-radius: 24px 24px 0 0;
+      .detail-logo-frame {
+        width: 100%;
+        min-height: 80px;
+        justify-content: flex-start;
       }
     }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen">
 
-  <!-- Header -->
-  <header class="registry-header sticky top-0 z-30 border-b">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
-      <div class="registry-heading-row">
-        <div class="registry-brand" aria-label="Verra">
-          <img class="registry-brand-logo" src="./logo.svg" alt="Verra" width="109" height="40" />
-        </div>
-        <h1>Data Service Provider (DSP) Directory</h1>
-        <span class="registry-heading-spacer" aria-hidden="true"></span>
-      </div>
-    </div>
-  </header>
-
-  <!-- Main Content Cards -->
-  <main class="directory-main max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="directory-intro">
-      <div>
-        <h2>Explore providers</h2>
-        <p>Provider-submitted information about VM0047 Stocking Index (SI) and dynamic performance-baselining data services.</p>
-      </div>
-      <span class="results-count" id="resultsCount" aria-live="polite"></span>
-    </div>
-    <!-- Search & Filters -->
-    <div class="search-controls grid grid-cols-1 sm:grid-cols-3 gap-3">
+  <header class="dsp-toolbar">
+    <h1 class="dsp-toolbar-title" id="directoryTitle">Data Service Provider Directory</h1>
+    <div class="search-controls" role="search" aria-label="Filter data service providers">
       <label class="filter-field">
         <span class="filter-label">Search providers</span>
         <input
@@ -589,8 +675,8 @@
         <span class="filter-label">API integration</span>
         <select id="statusFilter">
           <option value="">All statuses</option>
-          <option value="Completed">API Completed</option>
-          <option value="In progress">API In progress</option>
+          <option value="Completed">Project Hub API complete</option>
+          <option value="In progress">Project Hub API in progress</option>
         </select>
       </label>
       <label class="filter-field">
@@ -602,41 +688,44 @@
         </select>
       </label>
     </div>
-    <div id="dspGrid" class="dsp-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <!-- Injected via JavaScript -->
-    </div>
-  </main>
-  <footer class="site-footer">
-    <div class="site-footer-content">
-      <p>© 2026 Verra All rights reserved.</p>
-      <nav class="site-footer-links" aria-label="Footer">
-        <a href="https://verra.org/trust-and-security/" target="_blank" rel="noopener noreferrer">Trust &amp; Security</a>
-        <a href="https://verra.org/verra-website-terms-and-conditions-of-use/" target="_blank" rel="noopener noreferrer">Terms &amp; Conditions</a>
-        <a href="https://verra.org/about-verra/logos/" target="_blank" rel="noopener noreferrer">Logo Use Request</a>
-      </nav>
-    </div>
-  </footer>
+  </header>
 
-  <!-- Modal for full technical responses -->
-  <div id="detailModal" class="detail-modal fixed inset-0 z-50 hidden backdrop-blur-sm flex justify-center items-end sm:items-center p-0 sm:p-4">
-    <div class="modal-panel bg-white w-full sm:max-w-3xl max-h-[90vh] rounded-t-2xl sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-      <div class="modal-heading px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+  <main class="directory-content">
+    <section id="directoryView" class="directory-main" aria-labelledby="directoryTitle">
+      <div class="directory-intro">
         <div>
-          <h3 id="modalTitle" class="text-xl font-bold text-slate-900"></h3>
-          <p id="modalSubtitle" class="text-xs text-slate-500 mt-0.5"></p>
+          <p>Explore provider-submitted information about VM0047 Stocking Index (SI) and dynamic performance-baselining data services.</p>
         </div>
-        <button onclick="closeModal()" class="modal-close text-slate-400 p-1.5 rounded-lg transition">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-        </button>
+        <span class="results-count" id="resultsCount" aria-live="polite"></span>
       </div>
-      <div id="modalContent" class="px-6 py-5 overflow-y-auto space-y-6 text-sm text-slate-700">
-        <!-- Injected via JavaScript -->
-      </div>
-      <div class="px-6 py-3 border-t border-slate-200 bg-slate-50 flex justify-end">
-        <button onclick="closeModal()" class="px-4 py-2 text-sm font-medium bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg transition">Close</button>
-      </div>
-    </div>
-  </div>
+      <aside class="usage-guidance" aria-label="Using DSP data with Project Hub">
+        <strong>Using DSP data with Project Hub</strong>
+        <p>“API integration complete” means the provider’s API connection with Project Hub is complete, enabling supported data exchange through connected workflows. Use still depends on project setup, authorization, and the integration’s supported features.</p>
+        <p>Providers without a completed Project Hub integration may still offer their own API or deliver data by files. Contact the provider using its detail-page links and agree on delivery; data will not sync into Project Hub automatically. Coordinate with your project team on how to provide the resulting data for your project.</p>
+      </aside>
+      <section class="provider-group" aria-labelledby="connectedGroupTitle">
+        <div class="provider-group-heading">
+          <div>
+            <h3 id="connectedGroupTitle">Project Hub API integration complete</h3>
+            <p>Providers whose Project Hub API integration is marked complete. Supported data exchange can use connected API workflows, subject to project setup, authorization, and available integration features.</p>
+          </div>
+          <span class="provider-group-count" id="connectedCount" aria-live="polite"></span>
+        </div>
+        <div id="connectedDspGrid" class="dsp-grid"></div>
+      </section>
+      <section class="provider-group" aria-labelledby="notConnectedGroupTitle">
+        <div class="provider-group-heading">
+          <div>
+            <h3 id="notConnectedGroupTitle">No completed Project Hub API integration</h3>
+            <p>These providers are not yet connected through a completed Project Hub API integration. They may still offer their own API or deliver data by files; contact each provider to confirm the available method and coordinate with your project team on how to provide the data to Project Hub.</p>
+          </div>
+          <span class="provider-group-count" id="notConnectedCount" aria-live="polite"></span>
+        </div>
+        <div id="notConnectedDspGrid" class="dsp-grid"></div>
+      </section>
+    </section>
+    <section id="dspDetailView" class="dsp-detail-page" aria-live="polite" hidden></section>
+  </main>
 
   <script>
     // Embedded DSP responses directly from CSV data
@@ -924,7 +1013,13 @@
 ];
 
     // Render Grid Cards
-    const grid = document.getElementById("dspGrid");
+    const gridByIntegrationStatus = {
+      completed: document.getElementById("connectedDspGrid"),
+      pending: document.getElementById("notConnectedDspGrid"),
+    };
+    const directoryView = document.getElementById("directoryView");
+    const detailView = document.getElementById("dspDetailView");
+    const toolbarTitle = document.getElementById("directoryTitle");
     const dspLogos = {
       belian: "./Dsp_logos/belian_earth.png",
       chloris: "./Dsp_logos/chloris.png",
@@ -948,6 +1043,11 @@
       })[character]);
     }
 
+    function providerPageUrl(id) {
+      const query = new URLSearchParams({ dsp: id });
+      return `${window.location.pathname}?${query.toString()}`;
+    }
+
     function safeWebUrl(value) {
       try {
         const url = new URL(value);
@@ -960,7 +1060,7 @@
     function detailSection(label, value) {
       return `
         <section class="detail-section">
-          <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">${label}</h4>
+          <h3>${escapeHtml(label)}</h3>
           <p class="leading-relaxed">${escapeHtml(value || "Not provided in response.")}</p>
         </section>
       `;
@@ -969,17 +1069,26 @@
     function render(items) {
       document.getElementById("resultsCount").textContent =
         `${items.length} ${items.length === 1 ? "provider" : "providers"}`;
-      grid.innerHTML = "";
+      const groups = {
+        completed: items.filter(d => d.apiStatus === "Completed"),
+        pending: items.filter(d => d.apiStatus !== "Completed"),
+      };
+      document.getElementById("connectedCount").textContent =
+        `${groups.completed.length} ${groups.completed.length === 1 ? "provider" : "providers"}`;
+      document.getElementById("notConnectedCount").textContent =
+        `${groups.pending.length} ${groups.pending.length === 1 ? "provider" : "providers"}`;
+      gridByIntegrationStatus.completed.innerHTML = "";
+      gridByIntegrationStatus.pending.innerHTML = "";
       if (items.length === 0) {
-        grid.innerHTML = `<div class="col-span-full rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-16 text-center text-slate-500">No providers match these filters. Try changing your search or selections.</div>`;
+        gridByIntegrationStatus.pending.innerHTML = `<div class="col-span-full rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-16 text-center text-slate-500">No providers match these filters. Try changing your search or selections.</div>`;
         return;
       }
 
-      items.forEach(d => {
+      Object.entries(groups).forEach(([group, providers]) => providers.forEach(d => {
         const isCompleted = d.apiStatus === "Completed";
-        const badgeColor = isCompleted ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800";
+        const badgeColor = isCompleted ? "status-completed" : "status-in-progress";
 
-        const card = document.createElement("div");
+        const card = document.createElement("article");
         card.className = "dsp-card bg-white border border-slate-200 rounded-xl p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between";
         card.innerHTML = `
           <div>
@@ -987,7 +1096,7 @@
             <div class="flex items-start justify-between gap-2 mb-2">
               <h2 class="font-bold text-lg text-slate-900">${escapeHtml(d.name)}</h2>
               <span class="api-status inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${badgeColor}">
-                API: ${escapeHtml(d.apiStatus)}
+                Project Hub API: ${escapeHtml(d.apiStatus)}
               </span>
             </div>
             <p class="dsp-location mb-3">${escapeHtml(d.hq)} ${d.founded ? '• Est. ' + escapeHtml(d.founded) : ''}</p>
@@ -1014,62 +1123,129 @@
           </div>
 
           <div class="dsp-actions mt-4 pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
-            <button onclick="openModal('${d.id}')" class="registry-action text-xs font-semibold px-3 py-1.5 rounded-md transition">
-              Full Details →
-            </button>
+            <a href="${providerPageUrl(d.id)}" class="registry-action text-xs font-semibold px-3 py-1.5 rounded-md transition">
+              View DSP details →
+            </a>
             <div class="flex items-center gap-2">
               ${d.url ? `<a href="${safeWebUrl(d.url)}" target="_blank" rel="noopener noreferrer" class="quick-link text-slate-400 hover:text-slate-600 p-1" title="Website" aria-label="Visit ${escapeHtml(d.name)} website"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg></a>` : ''}
               ${d.email ? `<a href="mailto:${escapeHtml(d.email)}" class="quick-link text-slate-400 hover:text-slate-600 p-1" title="Email" aria-label="Email ${escapeHtml(d.name)}"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></a>` : ''}
             </div>
           </div>
         `;
+        card.setAttribute("role", "link");
+        card.setAttribute("tabindex", "0");
+        card.setAttribute("aria-label", `View details for ${d.name}`);
         card.addEventListener("click", event => {
-          if (event.target.closest("a, button")) return;
-          openModal(d.id);
+          if (event.target instanceof Element && event.target.closest("a, button")) return;
+          window.location.assign(providerPageUrl(d.id));
         });
-        grid.appendChild(card);
-      });
+        card.addEventListener("keydown", event => {
+          if (event.target !== card || !["Enter", " "].includes(event.key)) return;
+          event.preventDefault();
+          window.location.assign(providerPageUrl(d.id));
+        });
+        gridByIntegrationStatus[group].appendChild(card);
+      }));
     }
 
-    // Modal Details Handler
-    function openModal(id) {
-      const d = dspData.find(x => x.id === id);
-      if (!d) return;
+    function renderProviderPage(d) {
+      const isCompleted = d.apiStatus === "Completed";
+      const badgeColor = isCompleted ? "status-completed" : "status-in-progress";
+      const integrationExplanation = isCompleted
+        ? "Project Hub API integration is complete. Supported data exchange can use connected workflows, subject to project setup, authorization, and available integration features."
+        : "No completed Project Hub API integration is listed. This provider may still offer its own API or file delivery; contact them to confirm options. Data will not sync to Project Hub automatically.";
+      const logo = dspLogos[d.id]
+        ? `<div class="detail-logo-frame"><img src="${escapeHtml(dspLogos[d.id])}" alt="${escapeHtml(d.name)} logo"></div>`
+        : "";
+      const links = [
+        d.url && safeWebUrl(d.url)
+          ? `<a href="${safeWebUrl(d.url)}" target="_blank" rel="noopener noreferrer">Website ↗</a>`
+          : "",
+        d.requestUrl && safeWebUrl(d.requestUrl)
+          ? `<a href="${safeWebUrl(d.requestUrl)}" target="_blank" rel="noopener noreferrer">Request SI Agreement ↗</a>`
+          : "",
+        d.whitepaper && safeWebUrl(d.whitepaper)
+          ? `<a href="${safeWebUrl(d.whitepaper)}" target="_blank" rel="noopener noreferrer">Public Whitepaper ↗</a>`
+          : "",
+        d.email ? `<a href="mailto:${escapeHtml(d.email)}">Contact ${escapeHtml(d.name)}</a>` : "",
+      ].filter(Boolean).join("");
+      const sections = [
+        ["SI Product Name", d.product],
+        ["Approach: Suitability for ARR and What Proponents Should Know", d.approach],
+        ["How the SI Is Produced", d.production],
+        ["How SI Correlation with AGB Is Shown", d.correlation],
+        ["Limits or Conditions on Use of Data", d.limits],
+        ["Limitations of the Data", d.limitations],
+        ["Validation Against Field Plot Data", d.fieldValidation],
+        ["Typical Project Size Range (ha)", d.projectSize],
+        ["Handling and Communicating SI Method Changes", d.methodChanges],
+        ["Data Delivery if No API Connection Yet", d.deliveryNoApi],
+        ["Auditable Documentation on Request", d.auditDocumentation],
+      ];
 
-      document.getElementById("modalTitle").innerText = d.name;
-      document.getElementById("modalSubtitle").innerText = `${d.hq} | VM0047 Version: ${d.versions}`;
-
-      let linksHtml = '';
-      if (d.url && safeWebUrl(d.url)) linksHtml += `<a href="${safeWebUrl(d.url)}" target="_blank" rel="noopener noreferrer" class="text-emerald-700 hover:underline mr-4">Website ↗</a>`;
-      if (d.requestUrl && safeWebUrl(d.requestUrl)) linksHtml += `<a href="${safeWebUrl(d.requestUrl)}" target="_blank" rel="noopener noreferrer" class="text-emerald-700 hover:underline mr-4">Request SI Agreement ↗</a>`;
-      if (d.whitepaper && safeWebUrl(d.whitepaper)) linksHtml += `<a href="${safeWebUrl(d.whitepaper)}" target="_blank" rel="noopener noreferrer" class="text-emerald-700 hover:underline mr-4">Public Whitepaper ↗</a>`;
-      if (d.email) linksHtml += `<a href="mailto:${escapeHtml(d.email)}" class="text-emerald-700 hover:underline">Contact: ${escapeHtml(d.email)}</a>`;
-
-      document.getElementById("modalContent").innerHTML = `
-        <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs leading-relaxed">
-          <strong class="text-slate-800">Quick Links:</strong> ${linksHtml || 'None provided in response.'}
-        </div>
-
-        ${detailSection("SI Product Name", d.product)}
-        ${detailSection("Approach: Suitability for ARR and What Proponents Should Know", d.approach)}
-        ${detailSection("How the SI Is Produced", d.production)}
-        ${detailSection("How SI Correlation with AGB Is Shown", d.correlation)}
-        ${detailSection("Limits or Conditions on Use of Data", d.limits)}
-        ${detailSection("Limitations of the Data", d.limitations)}
-        ${detailSection("Validation Against Field Plot Data", d.fieldValidation)}
-        ${detailSection("Typical Project Size Range (ha)", d.projectSize)}
-        ${detailSection("Handling and Communicating SI Method Changes", d.methodChanges)}
-        ${detailSection("Data Delivery if No API Connection Yet", d.deliveryNoApi)}
-        ${detailSection("Auditable Documentation on Request", d.auditDocumentation)}
+      directoryView.hidden = true;
+      detailView.hidden = false;
+      toolbarTitle.textContent = d.name;
+      detailView.innerHTML = `
+        <a class="detail-back-link" href="${escapeHtml(window.location.pathname)}">← Back to DSP Directory</a>
+        <article>
+          <header class="detail-hero">
+            <div>
+              <div class="flex flex-wrap items-center gap-2 mb-3">
+                <span class="api-status inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${badgeColor}">
+                  Project Hub API: ${escapeHtml(d.apiStatus)}
+                </span>
+                <span class="text-sm text-slate-500">VM0047 ${escapeHtml(d.versions || "")}</span>
+              </div>
+              <h2>${escapeHtml(d.name)}</h2>
+              <p>${escapeHtml(d.hq)}${d.founded ? ` · Established ${escapeHtml(d.founded)}` : ""}</p>
+              <p class="integration-explanation">${integrationExplanation}</p>
+              <p class="mt-4">${escapeHtml(d.summary)}</p>
+            </div>
+            ${logo}
+          </header>
+          <section class="detail-quick-links" aria-label="${escapeHtml(d.name)} links">
+            ${links || '<span class="text-slate-500">No contact or external links provided.</span>'}
+          </section>
+          <div class="detail-sections">
+            ${sections.map(([label, value]) => detailSection(label, value)).join("")}
+          </div>
+        </article>
       `;
-
-      document.body.classList.add("modal-open");
-      document.getElementById("detailModal").classList.remove("hidden");
+      document.title = `${d.name} | DSP Directory`;
     }
 
-    function closeModal() {
-      document.body.classList.remove("modal-open");
-      document.getElementById("detailModal").classList.add("hidden");
+    function renderNotFoundPage(id) {
+      directoryView.hidden = true;
+      detailView.hidden = false;
+      toolbarTitle.textContent = "DSP not found";
+      detailView.innerHTML = `
+        <div class="not-found-state">
+          <h2>DSP not found</h2>
+          <p>No provider matches “${escapeHtml(id)}”. It may have been removed or the link may be incorrect.</p>
+          <a class="registry-action inline-flex px-4 py-2 font-semibold" href="${escapeHtml(window.location.pathname)}">Back to DSP Directory</a>
+        </div>
+      `;
+      document.title = "DSP Not Found | DSP Directory";
+    }
+
+    function renderCurrentPage() {
+      const dspId = new URLSearchParams(window.location.search).get("dsp");
+      if (!dspId) {
+        directoryView.hidden = false;
+        detailView.hidden = true;
+        toolbarTitle.textContent = "Data Service Provider Directory";
+        document.title = "Data Service Provider Directory | Digital Resources/Documentation";
+        filterData();
+        return;
+      }
+
+      const provider = dspData.find(d => d.id === dspId);
+      if (provider) {
+        renderProviderPage(provider);
+      } else {
+        renderNotFoundPage(dspId);
+      }
     }
 
     // Filter Logic
@@ -1096,9 +1272,9 @@
     document.getElementById("searchInput").addEventListener("input", filterData);
     document.getElementById("statusFilter").addEventListener("change", filterData);
     document.getElementById("resolutionFilter").addEventListener("change", filterData);
+    window.addEventListener("popstate", renderCurrentPage);
 
-    // Initial render
-    render(dspData);
+    renderCurrentPage();
   </script>
 </body>
 </html>
