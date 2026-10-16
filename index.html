@@ -889,8 +889,16 @@
     }
 
     function providerPageUrl(id) {
-      const query = new URLSearchParams({ dsp: id });
-      return `${window.location.pathname}?${query.toString()}`;
+      return new URL(`dsp/${encodeURIComponent(id)}/`, window.location.href).toString();
+    }
+
+    function navigateToProvider(id) {
+      if (window.parent !== window) {
+        window.parent.postMessage({ type: "dsp-directory:navigate", providerId: id }, "*");
+        return;
+      }
+
+      window.location.assign(providerPageUrl(id));
     }
 
     function safeWebUrl(value) {
@@ -975,7 +983,7 @@
           </div>
 
           <div class="dsp-actions mt-4 pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
-            <a href="${providerPageUrl(d.id)}" class="registry-action text-xs font-semibold px-3 py-1.5 rounded-md transition">
+            <a href="${providerPageUrl(d.id)}" data-provider-id="${escapeHtml(d.id)}" class="registry-action text-xs font-semibold px-3 py-1.5 rounded-md transition">
               View DSP details →
             </a>
             <div class="flex items-center gap-2">
@@ -988,13 +996,19 @@
         card.setAttribute("tabindex", "0");
         card.setAttribute("aria-label", `View details for ${d.name}`);
         card.addEventListener("click", event => {
-          if (event.target instanceof Element && event.target.closest("a, button")) return;
-          window.location.assign(providerPageUrl(d.id));
+          if (event.target instanceof Element && event.target.closest("a, button")) {
+            if (event.target.closest("[data-provider-id]")) {
+              event.preventDefault();
+              navigateToProvider(d.id);
+            }
+            return;
+          }
+          navigateToProvider(d.id);
         });
         card.addEventListener("keydown", event => {
           if (event.target !== card || !["Enter", " "].includes(event.key)) return;
           event.preventDefault();
-          window.location.assign(providerPageUrl(d.id));
+          navigateToProvider(d.id);
         });
         gridByIntegrationStatus[group].appendChild(card);
       }));
@@ -1053,7 +1067,7 @@
       directoryFilters.hidden = true;
       toolbarTitle.textContent = d.name;
       detailView.innerHTML = `
-        <a class="detail-back-link" href="${escapeHtml(window.location.pathname)}">← Back to DSP Directory</a>
+        <a class="detail-back-link" href="${escapeHtml(window.location.pathname)}" data-directory-home>← Back to DSP Directory</a>
         <article>
           <header class="detail-hero">
             <div class="detail-hero-identity">
@@ -1090,7 +1104,7 @@
         <div class="not-found-state">
           <h2>DSP not found</h2>
           <p>No provider matches “${escapeHtml(id)}”. It may have been removed or the link may be incorrect.</p>
-          <a class="registry-action inline-flex px-4 py-2 font-semibold" href="${escapeHtml(window.location.pathname)}">Back to DSP Directory</a>
+          <a class="registry-action inline-flex px-4 py-2 font-semibold" href="${escapeHtml(window.location.pathname)}" data-directory-home>Back to DSP Directory</a>
         </div>
       `;
       document.title = "DSP Not Found | DSP Directory";
@@ -1178,6 +1192,15 @@
 
       render(filtered);
     }
+
+    document.addEventListener("click", event => {
+      if (!(event.target instanceof Element)) return;
+      const backLink = event.target.closest("[data-directory-home]");
+      if (!backLink || window.parent === window) return;
+
+      event.preventDefault();
+      window.parent.postMessage({ type: "dsp-directory:navigate", providerId: "" }, "*");
+    });
 
     document.getElementById("searchInput").addEventListener("input", filterData);
     document.getElementById("statusFilter").addEventListener("change", filterData);

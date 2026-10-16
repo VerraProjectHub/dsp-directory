@@ -6,9 +6,15 @@ Verra Data Service Provider (DSP) directory and information repository.
 The directory interface is maintained in `index.html`, and provider records are
 stored in `dsp-data.json`. Keep both files together when serving the directory.
 Each record's stable `id` is used to create a shareable detail page at
-`index.html?dsp=<id>` (for example, `index.html?dsp=belian`). GitHub Pages serves
-the same `index.html` for these query URLs, so detail pages can be opened
-directly, refreshed, and navigated with the browser history.
+`dsp/<id>/` (for example, `dsp/belian/`). GitHub Pages serves a provider-specific
+entry HTML file at each route; the existing `index.html?dsp=<id>` query URL also
+continues to work.
+
+Each provider also has a static route at `dsp/<id>/` (for example,
+`dsp/belian/`). These provider-specific HTML entry points forward to the shared
+detail renderer and keep the provider ID in the URL, allowing Project Hub to
+embed each provider at its own route. Add a matching `dsp/<id>/index.html` when
+adding a provider.
 
 The detail page is rendered from the selected record rather than provider-specific
 markup. CSV fields marked for removal are omitted from the data file, and retained
