@@ -874,6 +874,7 @@
       sylvera: "./Dsp_logos/sylvera.png",
       terracarbon: "./Dsp_logos/terracarbon.png",
       treefera: "./Dsp_logos/Treefera_Logo_Tagline%20Stacked_Black.png",
+      treeconomy: "./Dsp_logos/treeconomy.png",
       tspc: "./Dsp_logos/transparenc-logo-light-background.svg",
       varaha: "./Dsp_logos/varaha-logo.svg"
     };
@@ -918,7 +919,7 @@
             ${fields.map(([label, key]) => `
               <div class="detail-section-field">
                 <h4>${escapeHtml(label)}</h4>
-                <p>${escapeHtml(provider[key] || "Not provided in response.")}</p>
+                <p>${escapeHtml(provider[key] || "Not applicable.")}</p>
               </div>
             `).join("")}
           </div>
@@ -930,8 +931,10 @@
       document.getElementById("resultsCount").textContent =
         `${items.length} ${items.length === 1 ? "provider" : "providers"}`;
       const groups = {
-        completed: items.filter(d => d.apiStatus === "Completed"),
-        pending: items.filter(d => d.apiStatus !== "Completed"),
+        completed: items.filter(d => d.apiStatus === "Completed")
+          .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: "base" })),
+        pending: items.filter(d => d.apiStatus !== "Completed")
+          .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: "base" })),
       };
       document.getElementById("connectedCount").textContent =
         `${groups.completed.length} ${groups.completed.length === 1 ? "provider" : "providers"}`;
@@ -965,19 +968,19 @@
             <div class="dsp-facts space-y-1.5 py-3 border-t border-slate-100 text-xs">
               <div class="flex justify-between">
                 <span class="text-slate-400">Spatial resolution:</span>
-                <span class="font-semibold text-slate-700">${escapeHtml(d.resolution || "Not provided")}</span>
+                <span class="font-semibold text-slate-700">${escapeHtml(d.resolution || "Not applicable")}</span>
               </div>
               <div class="flex justify-between">
                 <span class="text-slate-400">Data availability (years):</span>
-                <span class="font-semibold text-slate-700">${escapeHtml(d.years || "Not provided")}</span>
+                <span class="font-semibold text-slate-700">${escapeHtml(d.years || "Not applicable")}</span>
               </div>
               <div class="flex justify-between">
                 <span class="text-slate-400">Update frequency:</span>
-                <span class="font-semibold text-slate-700">${escapeHtml(d.updateFrequency || "Not provided")}</span>
+                <span class="font-semibold text-slate-700">${escapeHtml(d.updateFrequency || "Not applicable")}</span>
               </div>
               <div class="flex justify-between">
                 <span class="text-slate-400">Geographic coverage:</span>
-                <span class="font-semibold text-slate-700">${escapeHtml(d.regions || "Not provided")}</span>
+                <span class="font-semibold text-slate-700">${escapeHtml(d.regions || "Not applicable")}</span>
               </div>
             </div>
           </div>
