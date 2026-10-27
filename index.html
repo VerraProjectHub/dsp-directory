@@ -368,14 +368,6 @@
       overflow-wrap: anywhere;
     }
 
-    .dsp-card .api-status {
-      flex: 0 1 auto;
-      max-width: 100%;
-      line-height: 1.35;
-      white-space: normal;
-      overflow-wrap: anywhere;
-    }
-
     .api-status.status-completed {
       border: 1px solid #a7f3d0;
       background: #ecfdf5;
@@ -937,9 +929,6 @@
       if (items.length === 0) return;
 
       Object.entries(groups).forEach(([group, providers]) => providers.forEach(d => {
-        const isCompleted = d.apiStatus === "Completed";
-        const badgeColor = isCompleted ? "status-completed" : "status-in-progress";
-
         const card = document.createElement("article");
         card.className = "dsp-card bg-white border border-slate-200 rounded-xl p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between";
         card.innerHTML = `
@@ -947,9 +936,6 @@
             ${dspLogos[d.id] ? `<div class="dsp-provider-logo-frame"><img class="dsp-provider-logo" src="${escapeHtml(dspLogos[d.id])}" alt="${escapeHtml(d.name)} logo" loading="lazy" decoding="async"></div>` : ''}
             <div class="dsp-card-heading">
               <h2 class="font-bold text-lg text-slate-900">${escapeHtml(d.name)}</h2>
-              <span class="api-status inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${badgeColor}">
-                Project Hub integration: ${escapeHtml(d.apiStatus)}
-              </span>
             </div>
             <p class="dsp-location mb-3">${escapeHtml(d.hq)} ${d.founded ? '• Est. ' + escapeHtml(d.founded) : ''}</p>
             <p class="dsp-summary line-clamp-3 mb-4">${escapeHtml(d.summary)}</p>
