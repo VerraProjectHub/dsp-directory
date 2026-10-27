@@ -198,11 +198,11 @@
 
     .search-controls {
       display: grid;
-      flex: 1 1 620px;
-      grid-template-columns: minmax(180px, 1.4fr) repeat(2, minmax(150px, 1fr));
+      flex: 0 1 560px;
+      grid-template-columns: repeat(2, minmax(200px, 1fr));
       gap: 12px;
       min-width: 0;
-      margin: 0;
+      margin: 0 0 0 auto;
       padding: 0;
       border: 0;
       border-radius: 0;
@@ -228,7 +228,7 @@
     .search-controls input,
     .search-controls select {
       width: 100%;
-      min-height: 40px;
+      min-height: 44px;
       border: 1px solid var(--pr-line);
       border-radius: 8px;
       padding: 0 12px;
@@ -390,11 +390,7 @@
 
     @media (max-width: 767px) {
       .search-controls {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .filter-field:first-child {
-        grid-column: 1 / -1;
+        grid-template-columns: minmax(0, 1fr);
       }
 
       .dsp-toolbar {
@@ -405,6 +401,7 @@
       .search-controls {
         width: 100%;
         flex-basis: auto;
+        margin-left: 0;
       }
     }
 
@@ -791,19 +788,11 @@
         />
       </label>
       <label class="filter-field">
-        <span class="filter-label">API integration</span>
+        <span class="filter-label">Project Hub integration status</span>
         <select id="statusFilter">
           <option value="">All statuses</option>
-          <option value="Completed">Project Hub API complete</option>
-          <option value="In progress">Project Hub API in progress</option>
-        </select>
-      </label>
-      <label class="filter-field">
-        <span class="filter-label">Spatial resolution</span>
-        <select id="resolutionFilter">
-          <option value="">All resolutions</option>
-          <option value="10m">10m</option>
-          <option value="30m">30m</option>
+          <option value="Completed">Integration Complete</option>
+          <option value="In progress">Under Development</option>
         </select>
       </label>
     </div>
@@ -817,16 +806,16 @@
         </div>
         <span class="results-count" id="resultsCount" aria-live="polite"></span>
       </div>
-      <aside class="usage-guidance" aria-label="Using DSP data with Project Hub">
-        <strong>Using DSP data with Project Hub</strong>
-        <p>“API integration complete” means the provider’s API connection with Project Hub is complete, enabling supported data exchange through connected workflows. Use still depends on project setup, authorization, and the integration’s supported features.</p>
-        <p>Providers without a completed Project Hub integration may still offer their own API or deliver data by files. Contact the provider using its detail-page links and agree on delivery; data will not sync into Project Hub automatically. Coordinate with your project team on how to provide the resulting data for your project.</p>
+      <aside class="usage-guidance" aria-label="Using DSP data for your carbon project">
+        <strong>Using DSP Data for Your Carbon Project</strong>
+        <p>An "Integration Complete" status indicates that a data service provider has established a connection with the Verra Project Hub, allowing supported project data to be shared through the Verra Project Hub workflows. Actual use of the data will depend on your project's configuration, permissions, and the provider's available data services.</p>
+        <p>If a provider has not yet completed its integration with the Verra Project Hub, you may still obtain data directly from that provider through file transfers or other agreed delivery methods. Contact the provider using the links on its profile page to discuss data access and delivery arrangements. Because this data will not automatically flow into the Verra Project Hub, project teams should establish an appropriate process for incorporating it into project monitoring, reporting, and verification activities.</p>
       </aside>
       <section class="provider-group" id="completedProviderGroup" aria-labelledby="connectedGroupTitle" hidden>
         <div class="provider-group-heading">
           <div>
-            <h3 id="connectedGroupTitle">Project Hub API integration complete</h3>
-            <p>Providers whose Project Hub API integration is marked complete. Supported data exchange can use connected API workflows, subject to project setup, authorization, and available integration features.</p>
+            <h3 id="connectedGroupTitle">Project Hub Integration Complete</h3>
+            <p>These providers have established a secure connection with the Verra Project Hub, enabling eligible project data to be shared through Project Hub workflows. Data access and availability may vary depending on project requirements, approvals, and provider capabilities.</p>
           </div>
           <span class="provider-group-count" id="connectedCount" aria-live="polite"></span>
         </div>
@@ -835,8 +824,8 @@
       <section class="provider-group" id="pendingProviderGroup" aria-labelledby="notConnectedGroupTitle" hidden>
         <div class="provider-group-heading">
           <div>
-            <h3 id="notConnectedGroupTitle">No completed Project Hub API integration</h3>
-            <p>These providers are not yet connected through a completed Project Hub API integration. They may still offer their own API or deliver data by files; contact each provider to confirm the available method and coordinate with your project team on how to provide the data to Project Hub.</p>
+            <h3 id="notConnectedGroupTitle">Project Hub Integration Under Development</h3>
+            <p>These providers are not currently connected to the Verra Project Hub. Data may still be available directly from the provider. Please contact the provider to confirm available data services and coordinate with your project team on how the data will be incorporated into your project.</p>
           </div>
           <span class="provider-group-count" id="notConnectedCount" aria-live="polite"></span>
         </div>
@@ -871,12 +860,12 @@
       cyclops: "./Dsp_logos/CYCLOPS-logo-black.png",
       kanop: "./Dsp_logos/kanop.png",
       lobelia: "./Dsp_logos/logo-lobelia-black.svg",
-      sylvera: "./Dsp_logos/sylvera.png",
       terracarbon: "./Dsp_logos/terracarbon.png",
       treefera: "./Dsp_logos/Treefera_Logo_Tagline%20Stacked_Black.png",
       treeconomy: "./Dsp_logos/treeconomy.png",
       tspc: "./Dsp_logos/transparenc-logo-light-background.svg",
-      varaha: "./Dsp_logos/varaha-logo.svg"
+      varaha: "./Dsp_logos/varaha-logo.svg",
+      "space-intelligence": "./Dsp_logos/space-intelligence.png"
     };
 
     function escapeHtml(value) {
@@ -1179,7 +1168,6 @@
 
       const q = document.getElementById("searchInput").value.toLowerCase();
       const status = document.getElementById("statusFilter").value;
-      const res = document.getElementById("resolutionFilter").value;
 
       const filtered = dspData.filter(d => {
         const searchableText = [
@@ -1189,8 +1177,7 @@
         ].join(" ").toLowerCase();
         const matchesQuery = searchableText.includes(q);
         const matchesStatus = status ? d.apiStatus === status : true;
-        const matchesRes = res ? String(d.resolution || "").includes(res) : true;
-        return matchesQuery && matchesStatus && matchesRes;
+        return matchesQuery && matchesStatus;
       });
 
       render(filtered);
@@ -1207,7 +1194,6 @@
 
     document.getElementById("searchInput").addEventListener("input", filterData);
     document.getElementById("statusFilter").addEventListener("change", filterData);
-    document.getElementById("resolutionFilter").addEventListener("change", filterData);
     window.addEventListener("popstate", () => {
       if (providerDataLoaded) renderCurrentPage();
     });

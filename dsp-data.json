@@ -5,9 +5,9 @@
     "founded": 2024,
     "hq": "belian GmbH, Zurich, 8050, Switzerland",
     "url": "https://belian.earth",
-    "requestUrl": "https://belian.earth/science",
-    "summary": "belian.earth builds locally-trained, project-specific counterfactual baselines for nature-based carbon projects (ARR, REDD+, IFM). For ARR under VM0047, its ramet47 platform narrows the comparison area using satellite embeddings, then matches project and control plots on a stocking index.",
-    "email": "chris@belian.earth",
+    "requestUrl": "https://belian.earth/science/vm0047",
+    "summary": "Locally trained stocking indices (SI), performance benchmarks and ex-ante projections, with a low-cost view before any audit-grade commitment. All come with quantified uncertainty. belian.earth’s VM0047 product, ramet47, uses satellite embeddings to select reference areas that constrain the control plot donor region and define the SI model training extent. Reference areas are chosen where their whole satellite record up to the project start, and their spatial context, resemble the project’s, enhancing the reliability of control plot matches derived from the SI. ramet47 has independently reproduced the benchmark of the first issued VM0047 project (VCS 5511), within uncertainty bounds.",
+    "email": "info@belian.earth",
     "versions": "Version 1.1",
     "production": "Our stocking index measures canopy structure, with NASA's GEDI lidar as the primary reference: canopy height (RH98) and plant area index (PAI), a measure of canopy density, used together. Where GEDI data is unavailable (beyond 51.6° N and 51.6° S), ICESat-2 ATL08 vegetation height data are used. It is built by fusing predictions from multiple satellite embedding products, including Embedded Seamless Data (Chen et al., 2026; Landsat and MODIS, 2000 to 2024), AlphaEarth Foundations (Brown et al., 2025; Sentinel-1/2, Landsat and GEDI, from 2017) and OlmoEarth v1.3 (Tseng et al., 2026; Sentinel-1/2 and Landsat, from 2017). Models are trained for the project's specific region against canopy measurements, ensuring better local accuracy. The derived SI is a gap-free 30 m series covering the project and reference areas for the 11 years before project start to the present; low-confidence pixel-years are down-weighted, not discarded. We map at 30 m because our models are trained on GEDI's 25 m lidar footprints, so a finer grid adds pixels, not information.",
     "correlation": "Canopy height and plant area index have a well-documented correlation with biomass, and combined they give a biomass proxy that correlates linearly with measured biomass across the biomes tested. The index is also checked against GEDI held out geographically, so the check area is never seen in training; against airborne-lidar canopy height in tropical forest and temperate forest (swisstopo); and by independently reproducing the benchmark of the first issued VM0047 project (VCS 5511). Accuracy figures are on our VM0047 page. Converting the index to biomass would add assumptions without adding anything the benchmark needs, and when we modelled biomass the same way it was less precise. That conversion needs to be done with ground-truth data from the project's own plots, and we can provide it as a separate service where needed.",
@@ -19,7 +19,7 @@
     "limitations": "Saturation: in tall, dense tropical forest the satellite signal saturates for every product, and that sensor limit cannot be removed. Training for the project's region reduces the modelling part, where predictions are pulled towards an average, and from 2019, once GEDI enters the AlphaEarth embeddings, the gap to airborne lidar narrows. GEDI canopy height sits about 5 to 6 m above airborne-lidar height; this is absorbed in calibration. Earlier years, especially before 2013, are less certain and are down-weighted.",
     "whitepaper": "https://belian.earth/science",
     "apiStatus": "In progress",
-    "deliveryNoApi": "Direct download from app.belian.earth: the reference areas, the stocking index, the dynamic baseline and performance benchmark, the uncertainty, and the audit pack. A preview gives the same analysis and the same answer, viewed in the app, without the audit materials. Audit materials are also provided through Verra's Project Hub."
+    "deliveryNoApi": "Direct download from app.belian.earth: the reference areas, the stocking index, the dynamic baseline and performance benchmark, the uncertainty, and the audit pack. A view gives the same analysis and the same answer in the app, without the audit materials. Audit materials are also provided through Verra's Project Hub."
   },
   {
     "id": "cyclops",
@@ -153,28 +153,6 @@
     "deliveryNoApi": "SI delivered with metadata, valid-pixel counts, quality flags and a project-specific\nSI-AGB validation report. Per-plot CSVI time series for project and control plots, with\nweight settings, SDM match tables, control-plot weights, PBt per monitoring cycle and a\nfield-validation report."
   },
   {
-    "id": "sylvera",
-    "name": "Sylvera",
-    "founded": 2020,
-    "hq": "London, United Kingdom",
-    "url": "https://www.sylvera.com",
-    "requestUrl": "",
-    "summary": "Independent carbon data platform offering ratings, pricing intelligence and geospatial lidar monitoring. Its Biomass Atlas gives annual aboveground biomass maps; for VM0047 it supplies donor pools, stocking-index rasters, matched plots and annual benchmark results.",
-    "email": "louis@sylvera.io",
-    "versions": "Version 1.1",
-    "production": "Annual Landsat (5/7/8/9) composites from all cloud-free observations feed a bias-corrected regression that uses satellite-derived canopy height to predict aboveground biomass (Mg/ha), trained on airborne laser scanning and multi-source lidar with separate ecoregion models. A pixel-level temporal profile model (constant, linear, B-spline, change-point) suppresses seasonal noise and fills gaps so every pixel has an annual value.",
-    "correlation": "AGB is the model's primary output, so no secondary SI-to-AGB correlation step is needed. Training labels come from ALS and multi-source lidar, converted to AGB with allometry validated against destructive field plots, and separate models per ecoregion fit the AGB-height relationship to each forest type.",
-    "limits": "",
-    "resolution": "30m",
-    "years": "2000-present",
-    "updateFrequency": "Annual",
-    "regions": "Global",
-    "limitations": "",
-    "whitepaper": "https://cdn.prod.website-files.com/673b5918a90b730875736def/6986176a5fdb87f36e09d67d_Biomass%20Atlas%20-%20Technical%20Report.pdf",
-    "apiStatus": "Completed",
-    "deliveryNoApi": "Donor pool in GIS format, SI raster inputs with metadata, project/control plots with full boundaries, and benchmark results in a spreadsheet."
-  },
-  {
     "id": "kanop",
     "name": "Kanop",
     "founded": 2021,
@@ -238,5 +216,26 @@
     "whitepaper": "https://app-eu1.hubspotdocuments.com/documents/143557206/view/1796213951?accessId=d33cd6\n\nhttps://app-eu1.hubspotdocuments.com/documents/143557206/view/1795974361?accessId=7adef8",
     "apiStatus": "In progress",
     "deliveryNoApi": ""
+  },
+  {
+    "id": "space-intelligence",
+    "name": "Space Intelligence",
+    "hq": "Edinburgh, United Kingdom",
+    "url": "https://www.space-intelligence.com/",
+    "requestUrl": "https://www.space-intelligence.com/project-verification-support/",
+    "summary": "Space Intelligence is an Edinburgh-based company that supplies audit-grade nature data from satellites to corporations, developers and Verra. For each VM0047 project, it builds a site-specific stocking index from suitable imagery, tests it against above-ground biomass, and supplies it to proponents.",
+    "email": "enquiries@space-intelligence.com",
+    "versions": "V1.0 & V1.1",
+    "production": "For every VM0047 project, Space Intelligence develops a bespoke, site-specific remote sensing stocking index. These normally use synthetic aperture radar (SAR) satellite data, typically from the European Space Agency (ESA), NASA and/or the Japanese Aerospace Exploration Agency (JAXA), though occasionally optical satellite data is used. Several possible stocking indices are tested, and the one with the best relationship to above-ground biomass for the project's ecosystem is selected.",
+    "correlation": "If a project has forest inventory plots, candidate indices are tested against above-ground biomass from those plots. Space Intelligence can support field protocol design and data collection. Where no plots exist, it uses open forest plots, regional or national forest inventory data, or relationships from peer-reviewed studies (e.g. Mitchard 2009, 2012; Bouvet 2018) to develop a suitable stocking index. Fit statistics and data sources are reported for each project.",
+    "limits": "Stocking indices can be provided for any project eligible under VM0047, without regional restriction. For each forest type, various stocking indices are tested to find the one most appropriate to the forest type and project.",
+    "resolution": "10 m to 25 m, depending on the satellite data behind each project's stocking index. Sentinel-1, NISAR and Sentinel-2 (where optical data is used) have a 10 m pixel size. ALOS PALSAR-2/4 has a 25 m pixel size.",
+    "years": "2007 to present. Coverage starts with the ALOS PALSAR archive; the satellite used for each project depends on the most suitable stocking index. The archive covers baseline years for projects starting from 2016.",
+    "updateFrequency": "Annual",
+    "regions": "Global",
+    "limitations": "Space Intelligence mostly uses SAR data, which is not impacted by clouds and is less impacted by herbaceous vegetation than optical data. SAR backscatter saturates at high biomass and is sensitive to moisture, so dry-season scenes are used where relevant.",
+    "whitepaper": "https://doi.org/10.1080/17550874.2012.695814 ; https://info.space-intelligence.com/hubfs/Space%20Intelligence%20-%20ARR%20Project%20Origination%20Sample%20Report%20Brazil.pdf",
+    "apiStatus": "In progress",
+    "deliveryNoApi": "Delivered to the proponent: yearly GeoTIFF stocking index maps, project and control plot files, and a detailed analyst-written PDF report justifying the index selection."
   }
 ]
